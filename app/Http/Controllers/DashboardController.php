@@ -2,23 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SchoolClass;
-use App\Models\Teacher;
 use Illuminate\Http\Request;
 
-class SchoolClassController extends Controller
+class DashboardController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $classes = SchoolClass::with('teacher.user')->withCount('students')->get();
-        $classCount = SchoolClass::count();
-        $teachingCount  = SchoolClass::where('status','teaching')->count();
-        $pendingCount = SchoolClass::where('status','pending')->count();
-        $teachers = Teacher::all();
-        return view('classes',compact('classes','classCount','teachingCount','pendingCount','teachers'));
+        $classes = [];
+        $studentCount = 2;
+        $students = [];
+        return view("dashboard",compact("classes","studentCount","students"));
     }
 
     /**
@@ -66,6 +62,6 @@ class SchoolClassController extends Controller
      */
     public function destroy(string $id)
     {
-        
+        //
     }
 }

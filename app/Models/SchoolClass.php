@@ -9,7 +9,7 @@ class SchoolClass extends Model
 {
     use HasFactory;
     public function students() {
-        return $this->hasMany(Student::class);
+        return $this->hasMany(Student::class,'class_id');
     }
     public function teacher() {
         return $this->belongsTo(Teacher::class);

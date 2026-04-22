@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // 1. CREATE CLASSES FIRST (no teacher yet)
-        $classes = SchoolClass::factory(5)->create();
+        $classes = SchoolClass::factory(10)->create();
 
         // 2. CREATE TEACHER USERS
         $teacherUsers = User::factory(40)->create([

@@ -383,6 +383,12 @@
           <option value="male">Male</option>
           <option value="female">Female</option>
         </select>
+        <select class="filter-select" id="sortBy" onchange="sortTable()">
+          <option value="oldest">Oldest first</option>
+          <option value="newest">Newest first</option>
+          <option value="name_asc">Name (A → Z)</option>
+          <option value="name_desc">Name (Z → A)</option>
+        </select>
       </div>
 
       <div class="table-wrap">
@@ -413,47 +419,25 @@
 
 <!-- ENROLL MODAL -->
 <div class="overlay" id="overlay" onclick="closeOnOverlay(event)">
+  <form action="{{ route('teachers.store') }}" method="POST">
+  @csrf
   <div class="modal">
     <div class="modal-header">
-      <h2>Enroll New Student</h2>
+      <h2>Enroll New Teacher</h2>
       <button class="close-btn" onclick="closeModal()">✕</button>
     </div>
     <div class="form-grid">
       <div class="form-group full">
         <label>Full Name</label>
-        <input type="text" id="f-name" placeholder="e.g. Emma Watson"/>
+        <input type="text" id="f-name" placeholder="e.g. Emma Watson" name="fullname" required/>
       </div>
       <div class="form-group full">
         <label>Email</label>
-        <input type="email" id="f-email" placeholder="student@school.edu"/>
-      </div>
-      <div class="form-group">
-        <label>Class</label>
-        <select id="f-class">
-          <option value="">Select class</option>
-          <option value="">8A</option>
-          <option value="">8B</option>
-          <option value="">9A</option>
-          <option value="">9B</option>
-          <option value="">10A</option>
-          <option value="">10B</option>
-          <option value="">11A</option>
-          <option value="">11C</option>
-          <option value="">12A</option>
-          <option value="">12B</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Teacher</label>
-        <select id="f-teacher">
-          <option value="">Select teacher</option>
-          <option>Mr. Harrison</option><option>Ms. Campbell</option>
-          <option>Dr. Nguyen</option><option>Mrs. Okafor</option><option>Mr. Silva</option>
-        </select>
+        <input type="email" id="f-email" placeholder="teacher@gmail.com" name="email" required/>
       </div>
       <div class="form-group">
         <label>Gender</label>
-        <select id="f-gender">
+        <select id="f-gender" name="gender">
           <option value="">Select gender</option>
           <option value="male">Male</option>
           <option value="female">Female</option>
@@ -461,22 +445,19 @@
       </div>
       <div class="form-group">
         <label>Date of Birth</label>
-        <input type="date" id="f-dob"/>
+        <input type="date" id="f-dob" name="date_of_birth" required/>
       </div>
       <div class="form-group full">
-        <label>Status</label>
-        <select id="f-status">
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-          <option value="withdrawn">Withdrawn</option>
-        </select>
+        <label>CIN</label>
+        <input type="text" name="cin" placeholder="e.g. X123456" name="cin" required>
       </div>
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-submit" onclick="enrollStudent()">Enroll Teacher</button>
+      <button class="btn-submit" type="submit">Enroll Teacher</button>
     </div>
   </div>
+</form>
 </div>
 
 <!-- TOAST -->
@@ -484,7 +465,6 @@
 <script>
 const COLORS = ['#3b6ef8','#8b5cf6','#10b981','#f59e0b','#ef4444','#06b6d4','#ec4899','#84cc16','#f97316','#6366f1','#14b8a6','#a855f7','#0ea5e9','#d946ef','#22c55e'];
 let teachers = @json($teachers);
-console.log(@json($teachers));
 console.log(teachers);
 let filtered = [...teachers];
 let page = 1;
@@ -508,21 +488,21 @@ function render(){
   document.getElementById('tableBody').innerHTML = slice.map((t,i)=>`
     <tr style="animation-delay:${i*.03}s">
       <td><div class="student-cell">
-        <div class="stu-avatar" style="background:${colorFor(t.user?.fname)}">${initials(t.user?.fname)}</div>
-        <div><div class="stu-name">${t.user?.fname}</div><div class="stu-email">${t.user.email}</div></div>
+        <div class="stu-avatar" style="background:${colorFor(t.user?.fullname)}">${initials(t.user?.fullname)}</div>
+        <div><div class="stu-name">${t.user?.fullname}</div><div class="stu-email">${t.user.email}</div></div>
       </div></td>
       <td><span class="stu-id">${t.user?.cin}</span></td>
       <td><span class="class-badge">${t.school_class?.name}</span></td>
-      <td style="font-size:13px;color:var(--text-label)">${t.teacher?.user?.fname} ${t.teacher?.user?.lname}</td>
-      <td><span class="gender-badge gender-${t.gender}">${t.gender.charAt(0).toUpperCase()+t.gender.slice(1)}</span></td>
-      <td><span class="dob">${fmtDob(t.date_of_birth)}</span></td>
+      <td style="font-size:13px;color:var(--text-label)">${t.user?.fullname}</td>
+      <td><span class="gender-badge gender-${t.user?.gender}">${t.user?.gender.charAt(0).toUpperCase()+t.user?.gender.slice(1)}</span></td>
+      <td><span class="dob">${fmtDob(t.user?.date_of_birth)}</span></td>
       <td><span class="status-badge ${sClass(t.status)}">${sLabel(t.status)}</span></td>
       <td><button class="action-btn" onclick="viewProfile('${t.id}')">Profile</button></td>
     </tr>
   `).join('');
 
   const end=Math.min(start+PER,total);
-  document.getElementById('tfInfo').textContent = total===0?'No students found':`Showing ${start+1}–${end} of ${total} student${total!==1?'s':''}`;
+  document.getElementById('tfInfo').textContent = total===0?'No teachers found':`Showing ${start+1}–${end} of ${total} student${total!==1?'s':''}`;
 
   const pg=document.getElementById('pagination'); pg.innerHTML='';
   const btn=(label,p,active=false)=>{const b=document.createElement('button');b.className='pg-btn'+(active?' active':'');b.textContent=label;b.onclick=()=>{page=p;render();};return b;};
@@ -539,17 +519,41 @@ function filterTable() {
   const cls = document.getElementById('classFilter').value;
   const st = document.getElementById('statusFilter').value;
   const gn = document.getElementById('genderFilter').value;
-  filtered = (students || []).filter(s =>
+  filtered = (teachers || []).filter(t =>
     (!q ||
-      s.user?.fname?.toLowerCase().includes(q) ||
-      String(s.id).toLowerCase().includes(q) ||
-      s.teacher?.user?.fname?.toLowerCase().includes(q) ||
-      s.user?.cin?.toLowerCase().includes(q)
+      t.user?.fullname?.toLowerCase().includes(q) ||
+      t.user?.cin?.toLowerCase().includes(q)
     ) &&
-    (!cls || s.school_class?.name == cls || s.school_class?.id == cls) &&
-    (!st || s.status == st) &&
-    (!gn || s.gender == gn)
+    (!st || t.status == st) &&
+    (!gn || t.user?.gender == gn)
   );
+
+  page = 1;
+  render();
+}
+
+function sortTable() {
+  const value = document.getElementById('sortBy').value;
+
+  if (value === "name_asc") {
+    filtered.sort((a, b) =>
+      (a.user?.fullname || "").localeCompare(b.user?.fullname || "")
+    );
+  }
+
+  if (value === "name_desc") {
+    filtered.sort((a, b) =>
+      (b.user?.fullname || "").localeCompare(a.user?.fullname || "")
+    );
+  }
+
+  if (value === "newest") {
+    filtered.sort((a, b) => b.id - a.id);
+  }
+
+  if (value === "oldest") {
+    filtered.sort((a, b) => a.id - b.id);
+  }
 
   page = 1;
   render();
@@ -582,9 +586,9 @@ function enrollTeacher(){
 function viewProfile(id){
   console.log("hi");
   const t=teachers.find(x=>x.id == id);
-  if(s) showToast('👤 Opening profile for '+s.user?.fname+'…');
+  if(t) showToast('👤 Opening profile for '+t.user?.fullname+'…');
   setTimeout(() => {
-    window.location.href = `/students/${id}`;
+    window.location.href = `/teachers/${id}`;
   }, 2000); // 2 seconds
 }
 

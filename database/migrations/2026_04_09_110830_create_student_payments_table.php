@@ -16,9 +16,11 @@ return new class extends Migration
             $table->foreignId('student_id')->constrained()->cascadeOnDelete();
             $table->date('month'); // 2026-04-01
             $table->boolean('is_paid')->default(false);
-            $table->date('paid_at')->nullable();
             $table->unique(['student_id', 'month']); //! Ensure a student has only **one payment record per month**
-            $table->timestamps();
+            $table->timestamps(); //? CREATED_AT = PAID_AT 
+
+            //! Who didnt pay this month LOGIC
+            $table->index(['student_id', 'month']);
         });
     }
 

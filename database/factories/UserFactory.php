@@ -30,6 +30,7 @@ class UserFactory extends Factory
         'date_of_birth' => fake()->date(),
         'role' => fake()->boolean(10) ? 'teacher' : 'student', //info 90% students 10% teachers
         'avatar_url' => null,
+        "phone_number" => fake()->unique()->numerify('0' . fake()->randomElement(['6', '7']) . '########'),
         'is_active' => true,
         'email' => fake()->unique()->safeEmail(),
         'password' => static::$password ??= Hash::make('password'),
