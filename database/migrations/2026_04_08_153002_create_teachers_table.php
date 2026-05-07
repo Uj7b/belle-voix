@@ -16,8 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')
                   ->unique()
                   ->constrained('users')
-                  ->cascadeOnUpdate()
-                  ->restrictOnDelete();
+                  ->cascadeOnUpdate();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });

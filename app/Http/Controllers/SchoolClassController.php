@@ -58,7 +58,12 @@ class SchoolClassController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $class = SchoolClass::find($id,"id");
+        $class->name = $request->name;
+        $class->teacher_id = $request->teacher_id;
+        $class->status = $request->status;
+        $class->save();
+        return redirect()->back()->withSuccess("class edited successfully");
     }
 
     /**
@@ -66,6 +71,13 @@ class SchoolClassController extends Controller
      */
     public function destroy(string $id)
     {
-        
+        $class = SchoolClass::with('students')->findOrFail($id);
+        if ($class->students()->count() > 0) {
+            return redirect()->back()->with('error',"cannot delete class with students");
+        }
+        else {
+            $class->delete();
+            return redirect()->back()->withSuccess('class deleted successfully');
+        }
     }
 }

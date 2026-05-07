@@ -1,24 +1,18 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\StudentPayment;
+use App\Models\Schedule;
 use Illuminate\Http\Request;
 
-class StudentPaymentsController extends Controller
+class ScheduleController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $studentCount = 3;
-        $classes = [];
-        $payments = StudentPayment::with(['student.user', 'student.schoolClass'])
-    ->orderBy('due_date', 'desc')
-    ->orderBy('created_at', 'desc')
-    ->get();
-        return view('payments',compact('payments','studentCount','classes'));
+        $schedules = Schedule::with('teacher','school_class')->get();
+        return view('schedules',compact('schedules'));
     }
 
     /**
@@ -34,14 +28,7 @@ class StudentPaymentsController extends Controller
      */
     public function store(Request $request)
     {
-        $payment = StudentPayment::create([
-           'student_id' => $request->student_id,
-           'amount' => $request->amount,
-           'due_date' => now(),
-           'paid_at'=> now()
-        ]);
-        $payment->save();
-        return redirect()->back()->with('success','payment added successfully');
+        //
     }
 
     /**

@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\StudentPayment;
+use App\Models\Schedule;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<StudentPayment>
+ * @extends Factory<Schedule>
  */
-class StudentPaymentFactory extends Factory
+class ScheduleFactory extends Factory
 {
     /**
      * Define the model's default state.

@@ -4,87 +4,125 @@ namespace App\Http\Controllers;
 
 use App\Models\SchoolClass;
 use App\Models\Student;
+use App\Models\StudentPayment;
 use App\Models\User;
-use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class StudentController extends Controller
-{   
+{
     /**
-     * Display a listing of the resource.
+     * List students
      */
     public function index()
     {
-        $students = Student::with(['user','schoolClass.teacher.user'])->get();
-        $studentCount = Student::all()->count();
-        $classes = SchoolClass::with('teacher.user')->get();
-        return view('students',compact('students','studentCount','classes'));
+        return view('students', [
+            'students'      => Student::with(['user', 'schoolClass.teacher.user'])->orderBy('id','desc')->get(),
+            'studentCount'  => Student::count('id'),
+            'classes'       => SchoolClass::with('teacher.user')->get(),
+        ]);
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Store student (atomic)
      */
     public function store(Request $request)
     {
-        //! create user first
-        $user = User::create([
-        'fullname' => $request->fullname,
-        'email' => $request->email,
-        'password' => bcrypt(Str::upper(Str::random(4)) . rand(1000, 9999)), // or generate
-        'date_of_birth' => $request->date_of_birth,
-        'gender' => $request->gender,
-        'cin' => $request->cin,
-        'role' => 'student',
+        $validated = $request->validate([
+            'fullname'       => 'required|string|max:255',
+            'email'          => 'required|email|unique:users,email',
+            'cin'            => 'required|string|unique:users,cin',
+            'phone_number'   => 'nullable|string|max:20',
+            'dob'            => 'required|date',
+            'gender'         => 'required|in:male,female',
+            'class_id'       => 'required|exists:school_classes,id',
         ]);
-        //! create student
-        Student::create([
-        'user_id' => $user->id,
-        'class_id' => $request->class_id,
-        ]);
-        return redirect()->route('students.index');
+
+        DB::transaction(function () use ($validated) {
+
+            $user = User::create([
+                'fullname'       => $validated['fullname'],
+                'email'          => $validated['email'],
+                'phone_number'   => $validated['phone_number'] ?? null,
+                'password'       => Hash::make(Str::password(10)), // cleaner
+                'date_of_birth'  => $validated['dob'],
+                'gender'         => $validated['gender'],
+                'cin'            => $validated['cin'],
+                'role'           => 'student',
+            ]);
+
+            $user->student()->create([
+                'class_id' => $validated['class_id'],
+            ]);
+        });
+
+        return redirect()
+            ->route('students.index')
+            ->with('success', '✅ Student created successfully');
     }
 
     /**
-     * Display the specified resource.
+     * Show student
      */
     public function show(string $id)
     {
-         
-        $student = Student::with('user', 'schoolClass.teacher')->findOrFail($id);
-
-        return view('students.show', compact('student'));
+        return view('students.show', [
+            'student'  => Student::with(['user', 'schoolClass.teacher.user'])->findOrFail($id),
+            'payments' => StudentPayment::where('student_id', $id)->latest()->get(),
+            'classes'  => SchoolClass::all(),
+        ]);
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Update student (atomic)
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validated = $request->validate([
+            'fullname'      => 'required|string|max:255',
+            'phone_number'  => 'nullable|string|max:20',
+            'gender'        => 'required|in:male,female',
+            'dob'           => 'required|date',
+            'class_id'      => 'required|exists:school_classes,id',
+        ]);
+
+        DB::transaction(function () use ($validated, $id) {
+
+            $student = Student::with('user')->findOrFail($id);
+
+            $student->user->update([
+                'fullname'      => $validated['fullname'],
+                'phone_number' => $validated['phone_number'] ?: null,
+                'gender'        => $validated['gender'],
+                'date_of_birth' => $validated['dob'],
+            ]);
+
+            $student->update([
+                'class_id' => $validated['class_id'],
+            ]);
+            $student->user->save();
+            $student->save();
+        });
+
+        return back()->with('success', 'Student updated successfully');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete student safely
      */
     public function destroy(string $id)
     {
-        //
+        DB::transaction(function () use ($id) {
+
+            $student = Student::with('user')->findOrFail($id);
+
+            $student->user->delete(); // deletes user first
+            $student->delete();
+
+        });
+
+        return redirect()->route('students.index')->with('success', 'Student deleted successfully');
     }
 }

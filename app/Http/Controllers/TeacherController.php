@@ -17,7 +17,7 @@ class TeacherController extends Controller
      */
     public function index()
     {
-        $teachers = Teacher::with('user')->get();
+        $teachers = Teacher::with('user')->withCount('school_classes')->orderBy('id','desc')->get();
         $teacherCount = $teachers->count();
         return view('teachers',compact('teachers','teacherCount'));
     }
@@ -65,7 +65,8 @@ class TeacherController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $teacher = Teacher::findOrFail($id);
+        return view('teachers.show',compact('teacher'));
     }
 
     /**
@@ -89,6 +90,16 @@ class TeacherController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+    DB::transaction(function () use ($id) {
+
+        $teacher = Teacher::with('user')->findOrFail($id);
+
+        $teacher->delete(); // if FK cascade is set, user might auto delete
+        $teacher->user->delete();
+    });
+
+    return redirect()
+        ->route('teachers.index')
+        ->with('success', 'Teacher deleted successfully');
     }
 }

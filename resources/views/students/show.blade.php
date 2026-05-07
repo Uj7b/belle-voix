@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SchoolHub – Student Profile</title>
+<title>Belle Voix – {{ $student->user->fullname }}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
@@ -125,7 +125,7 @@
   .gender-female { background:#fdf2f8; color:#be185d; }
 
   /* PAYMENT SUMMARY */
-  .pay-summary { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; padding:16px 20px; border-bottom:1px solid var(--border); }
+  .pay-summary { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; padding:16px 20px; border-bottom:1px solid var(--border); }
   .pay-stat { background:var(--main-bg); border-radius:10px; padding:14px; text-align:center; }
   .pay-stat-val { font-size:18px; font-weight:800; margin-bottom:3px; }
   .pay-stat-label { font-size:11px; color:var(--text-muted); font-weight:500; }
@@ -174,7 +174,7 @@
   /* MODAL */
   .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.35); backdrop-filter:blur(3px); z-index:50; align-items:center; justify-content:center; }
   .overlay.open { display:flex; }
-  .modal { background:#fff; border-radius:16px; padding:28px; width:100%; max-width:460px; box-shadow:0 20px 60px rgba(0,0,0,.2); animation:slideUp .2s ease; margin:16px; }
+  .modal { background:#fff; border-radius:16px; padding:28px; width:100%; max-width:460px; box-shadow:0 20px 60px rgba(0,0,0,.2); animation:slideUp .2s ease; margin:16px; overflow: hidden; max-height: 90vh; overflow-y: auto;}
   @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
   .modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; }
   .modal-header h2 { font-size:18px; font-weight:800; }
@@ -184,7 +184,7 @@
   .form-group { display:flex; flex-direction:column; gap:5px; }
   .form-group.full { grid-column:1/-1; }
   .form-group label { font-size:11px; font-weight:700; color:var(--text-label); letter-spacing:.06em; text-transform:uppercase; }
-  .form-group input, .form-group select { border:1px solid var(--border); border-radius:8px; padding:9px 12px; font-size:13.5px; font-family:inherit; color:var(--text-primary); outline:none; transition:border-color .15s; background:var(--main-bg); }
+  .form-group input, .form-group select { border:1px solid var(--border); border-radius:8px; padding:9px 12px; font-size:13.5px; font-family:inherit; color:var(--text-primary); outline:none; transition:border-color .15s; background:var(--main-bg); min-width: 0; width: 100%;}
   .form-group input:focus, .form-group select:focus { border-color:var(--brand); background:#fff; }
   .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:22px; }
   .btn-cancel { padding:10px 20px; border-radius:9px; border:1px solid var(--border); background:#fff; font-size:13.5px; font-weight:600; font-family:inherit; color:var(--text-label); cursor:pointer; transition:background .15s; }
@@ -206,7 +206,7 @@
   <div class="sidebar-section-label">Menu</div>
   <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
   <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Teachers</a>
-  <a class="nav-item active" href="#"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Students</a>
+  <a class="nav-item active" href="{{ route('students.index') }}"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Students</a>
   <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Attendance</a>
   <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Finance</a>
   <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notice<span class="badge">5</span></a>
@@ -269,7 +269,7 @@
         </div>
       </div>
       <div class="hero-actions">
-        <button class="btn-edit">
+        <button class="btn-edit" onclick="openEditModal()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           Edit Profile
         </button>
@@ -277,9 +277,13 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
           Export Report
         </button>
-        <button class="btn-outline" onclick="showToast('📨 Message sent to Lucas.')">
+        <button class="btn-outline" onclick="showToast('📨 Message sent.')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           Send Message
+        </button>
+        <button class="btn-outline" style="color:#dc2626;border-color:#fca5a5;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fff'" onclick="document.getElementById('deleteOverlay').classList.add('open')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          Delete Student
         </button>
       </div>
     </div>
@@ -320,11 +324,7 @@
           </div>
           <div class="info-row">
             <div class="info-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.18 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 15.92z"/></svg></div>
-            <div><div class="info-label">Guardian Phone</div><div class="info-value" id="iPhone">+1 (555) 342-8810</div></div>
-          </div>
-          <div class="info-row">
-            <div class="info-icon"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-            <div><div class="info-label">Address</div><div class="info-value" id="iAddr">142 Maple St, Springfield</div></div>
+            <div><div class="info-label">Phone Number</div><div class="info-value" id="iPhone">{{ $student->user->phone_number}}</div></div>
           </div>
           <div class="info-row">
             <div class="info-icon"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
@@ -349,10 +349,6 @@
             <div class="pay-stat-val" style="color:var(--leave-amber)" id="sumPending">$300</div>
             <div class="pay-stat-label">Pending</div>
           </div>
-          <div class="pay-stat">
-            <div class="pay-stat-val red" id="sumFailed">$150</div>
-            <div class="pay-stat-label">Failed</div>
-          </div>
         </div>
 
         <div class="table-toolbar">
@@ -362,7 +358,7 @@
             <option value="pending">Pending</option>
             <option value="failed">Failed</option>
           </select>
-          <select class="filter-select" id="yearFilter" onchange="renderPayments()">
+          <select class="filter-select" id="monthFilter" onchange="renderPayments()">
             <option value="">All Years</option>
             <option value="2024">2024</option>
             <option value="2023">2023</option>
@@ -374,10 +370,9 @@
           <table>
             <thead>
               <tr>
-                <th>Description</th>
-                <th>Date</th>
+                <th>Paid At</th>
+                <th>Due Date</th>
                 <th>Amount</th>
-                <th>Method</th>
                 <th>Status</th>
                 <th>Invoice</th>
               </tr>
@@ -443,11 +438,114 @@
     </div>
   </div>
 </div>
-
+<!-- EDIT STUDENT MODAL -->
+<div class="overlay" id="editOverlay" onclick="closeEditOnOverlay(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Edit Student</h2>
+      <button type="button" class="close-btn" onclick="closeEditModal()">✕</button>
+    </div>
+    <form action="{{ route('students.update',$student->id) }}" method="POST">
+    @csrf
+    @method('PUT')
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Full Name</label>
+        <input type="text" id="e-name" name="fullname"/>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="e-email" name="email"/>
+      </div>
+      <div class="form-group">
+        <label>Phone number</label>
+        <input type="text" id="e-phone_number" name="phone_number" placeholder="e.g. 0612345678"/>
+      </div>
+      <div class="form-group">
+        <label>Class</label>
+        {{-- INFO options are fetched from DB --}}
+        <select id="e-class" name="class_id" '>
+          <option value="">Select class</option>
+          @foreach($classes as $class)
+          <option value="{{ $class->id }}" data-teacher="{{ $class->teacher?->user?->fullname }}">{{ $class->name }}</option>
+          @endforeach
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Teacher</label>
+        <input type="text" id="e-teacher" disabled placeholder="Teacher will appear here">
+      </div>
+      <div class="form-group">
+        <label>Date of Birth</label>
+        <input type="date" id="e-dob" name="dob"/>
+      </div>
+      <div class="form-group">
+        <label>Gender</label>
+        <select id="e-gender" name="gender">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>CIN</label>
+        <input type="text" id="e-cin" name="cin" placeholder="e.g. X123456" required>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+      <button class="btn-submit" type="submit">Save Changes</button>
+    </div>
+    </form>
+  </div>
+</div>
+<div class="overlay" id="deleteOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:380px">
+    <form action="{{ route('students.destroy', $student->id) }}" method="POST">
+      @csrf
+      @method('DELETE')
+      <div class="modal-header">
+        <h2>Delete Student</h2>
+        <button type="button" class="close-btn" onclick="document.getElementById('deleteOverlay').classList.remove('open')">✕</button>
+      </div>
+      <p style="color:var(--text-label);font-size:14px;line-height:1.7;margin-bottom:22px">
+        Are you sure you want to delete <strong>{{ $student->user->fullname }}</strong>?<br>This action cannot be undone.
+      </p>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" onclick="document.getElementById('deleteOverlay').classList.remove('open')">Cancel</button>
+        <button type="submit" class="btn-submit" style="background:#dc2626">Delete Student</button>
+      </div>
+    </form>
+  </div>
+</div>
 <!-- TOAST -->
+@if(session('success'))
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+    showToast(@json(session('success')));
+});
+</script>
+@endif
+
+@if ($errors->any())
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+    showToast(@json(implode("\n", $errors->all())));
+});
+</script>
+@endif
 <div class="toast" id="toast"><span id="toastMsg"></span></div>
 
 <script>
+function updateTeacherFromClass(e) {
+  const select = e?.target || document.getElementById('e-class');
+
+  const selected = select.options[select.selectedIndex];
+  const teacher = selected?.getAttribute('data-teacher');
+
+  document.getElementById('e-teacher').value = teacher || '';
+}
+document.getElementById('e-class').addEventListener('change', updateTeacherFromClass);
+
   let avatar = document.getElementById('heroAvatar');
   let student = @json($student);
 const COLORS = ['#3b6ef8','#8b5cf6','#10b981','#f59e0b','#ef4444','#06b6d4','#ec4899','#84cc16','#f97316','#6366f1','#14b8a6','#a855f7','#0ea5e9','#d946ef','#22c55e'];
@@ -462,16 +560,7 @@ const studentx ={
   attendance:94
 };
 
-let payments=[
-  {id:'INV-0841',desc:'Tuition Fee – Term 1',date:'2024-01-10',amount:600,method:'Bank Transfer',status:'paid'},
-  {id:'INV-0902',desc:'Tuition Fee – Term 2',date:'2024-04-08',amount:600,method:'Bank Transfer',status:'paid'},
-  {id:'INV-0965',desc:'Lab & Activity Fee',date:'2024-04-08',amount:150,method:'Cash',status:'paid'},
-  {id:'INV-1031',desc:'Tuition Fee – Term 3',date:'2024-09-02',amount:600,method:'Online Portal',status:'paid'},
-  {id:'INV-1044',desc:'Library Annual Fee',date:'2024-09-02',amount:50,method:'Cash',status:'paid'},
-  {id:'INV-1108',desc:'Sports Club Fee',date:'2024-11-15',amount:300,method:'Credit Card',status:'pending'},
-  {id:'INV-0778',desc:'Tuition Fee – Term 3',date:'2023-09-05',amount:550,method:'Bank Transfer',status:'paid'},
-  {id:'INV-0812',desc:'Exam Registration',date:'2023-12-01',amount:150,method:'Online Portal',status:'failed'},
-];
+window.payments = @json($payments) 
 
 function fmtDate(d){
   const [y,m,day]=d.split('-');
@@ -489,37 +578,28 @@ function methodIcon(m){
 }
 
 function renderPayments(){
-  const sf=document.getElementById('payFilter').value;
-  const yf=document.getElementById('yearFilter').value;
+  const yf=document.getElementById('monthFilter').value;
   const filtered=payments.filter(p=>
-    (!sf||p.status===sf)&&(!yf||p.date.startsWith(yf))
+  (!yf||p.due_date.startsWith(yf))
   );
   document.getElementById('payCountLabel').textContent=filtered.length+' transactions';
   document.getElementById('payFooterInfo').textContent=`Showing ${filtered.length} of ${payments.length} payments`;
   document.getElementById('payTableBody').innerHTML=filtered.map((p,i)=>`
     <tr style="animation-delay:${i*.03}s">
-      <td><div class="pay-type">
-        <span class="type-dot" style="background:${{paid:'#16a34a',pending:'#d97706',failed:'#dc2626'}[p.status]}"></span>
-        <span style="font-size:13px;font-weight:600;color:var(--text-primary)">${p.desc}</span>
-      </div></td>
-      <td style="font-size:12.5px;color:var(--text-label)">${fmtDate(p.date)}</td>
-      <td><span class="pay-amount pay-${p.status}">$${p.amount.toLocaleString()}</span></td>
-      <td><div class="pay-method"><span class="method-icon">${methodIcon(p.method)}</span>${p.method}</div></td>
-      <td><span class="pay-badge pb-${p.status}">${p.status.charAt(0).toUpperCase()+p.status.slice(1)}</span></td>
+      <td style="font-size:12.5px;color:var(--text-label)">${fmtDate(p.paid_at)}</td>
+      <td style="font-size:12.5px;color:var(--text-label)">${fmtDate(p.due_date)}</td>
+      <td><span class="pay-amount pay-${(p.paid_at ? 'paid' : 'unpaid')}">${p.amount.toLocaleString()} DH</span></td>
+      <td><span class="pay-badge pb-${(p.paid_at ? 'paid' : 'unpaid')}">${(p.paid_at ? 'paid' : 'unpaid').charAt(0).toUpperCase() + (p.paid_at ? 'paid' : 'unpaid').slice(1)}</span></td>
       <td><a class="invoice-link" onclick="showToast('📄 Opening ${p.id}…')">${p.id}</a></td>
     </tr>
   `).join('');
 }
 
 function updateSummary(){
-  const paid=payments.filter(p=>p.status==='paid').reduce((a,p)=>a+p.amount,0);
-  const pend=payments.filter(p=>p.status==='pending').reduce((a,p)=>a+p.amount,0);
-  const fail=payments.filter(p=>p.status==='failed').reduce((a,p)=>a+p.amount,0);
-  document.getElementById('sumPaid').textContent='$'+paid.toLocaleString();
-  document.getElementById('sumPending').textContent='$'+pend.toLocaleString();
-  document.getElementById('sumFailed').textContent='$'+fail.toLocaleString();
-  document.getElementById('sTotalPay').textContent='$'+paid.toLocaleString();
-  document.getElementById('sPending').textContent='$'+pend.toLocaleString();
+  const totalPaid = payments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+  console.log(totalPaid);
+  document.getElementById('sumPaid').textContent= totalPaid.toLocaleString() + ' MAD';
+  document.getElementById('sTotalPay').textContent='$'+totalPaid.toLocaleString();
   document.getElementById('sPayCount').textContent=payments.length;
   document.getElementById('payCountBadge').textContent=payments.length+' records';
 }
@@ -556,6 +636,56 @@ function showToast(msg){
 // init
 document.getElementById('sAttend').textContent=studentx.attendance+'%';
 updateSummary();renderPayments();
+
+// edit student
+function openEditModal() {
+  // Pre-fill from DOM
+  document.getElementById('e-name').value   = document.getElementById('iName').textContent.trim();
+  document.getElementById('e-email').value  = document.getElementById('iEmail').textContent.trim();
+  document.getElementById('e-phone_number').value  = student?.user?.phone_number;
+  document.getElementById('e-class').value  = student.school_class.id;
+  updateTeacherFromClass();
+  document.getElementById('e-gender').value = student.user?.gender || 'male';
+  document.getElementById('e-cin').value = student.user?.cin || '';
+  // dob: convert "Mar 15, 2008" back to input-friendly format
+  const dobRaw = student.user?.date_of_birth; // e.g. "2008-03-15"
+  if (dobRaw) document.getElementById('e-dob').value = dobRaw.slice(0, 10);
+  document.getElementById('editOverlay').classList.add('open');
+}
+
+function closeEditModal()         { document.getElementById('editOverlay').classList.remove('open'); }
+function closeEditOnOverlay(e)    { if (e.target === e.currentTarget) closeEditModal(); }
+
+function saveEdit() {
+  const name   = document.getElementById('e-name').value.trim();
+  const email  = document.getElementById('e-email').value.trim();
+  const phone  = document.getElementById('e-phone').value.trim();
+  const addr   = document.getElementById('e-addr').value.trim();
+  const status = document.getElementById('e-status').value;
+  if (!name || !email) { showToast('⚠️ Name and email are required.'); return; }
+
+  // Update visible DOM fields
+  document.getElementById('iName').textContent  = name;
+  document.getElementById('iEmail').textContent = email;
+  document.getElementById('iPhone').textContent = phone;
+  document.getElementById('iAddr').textContent  = addr;
+  document.getElementById('heroName').textContent = name;
+  document.getElementById('bc-name').textContent  = name;
+
+  // Update status badge & dot
+  const heroDot    = document.getElementById('heroDot');
+  const heroStatus = document.getElementById('heroStatus');
+  heroDot.className    = `hero-status-dot dot-${status}`;
+  heroStatus.className = `status-badge s-${status}`;
+  heroStatus.textContent = status;
+
+  // Sync avatar initials/color
+  avatar.textContent = initials(name);
+  avatar.style.backgroundColor = colorFor(name);
+
+  closeEditModal();
+  showToast('✅ Profile updated!');
+}
 </script>
 </body>
 </html>

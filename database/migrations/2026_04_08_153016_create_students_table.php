@@ -18,7 +18,7 @@ return new class extends Migration
                   ->unique()
                   ->constrained('users')
                   ->cascadeOnUpdate()
-                  ->restrictOnDelete();
+                  ->cascadeOnDelete();
             $table->enum('status', ['active', 'inactive', 'withdrawn'])->default('active');
             $table->timestamps();
         });

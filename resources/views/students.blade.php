@@ -233,11 +233,11 @@
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; min-width: 900px; }
   thead tr { border-bottom: 1px solid var(--border); }
-  thead th { padding: 12px 16px; font-size: 11px; font-weight: 700; letter-spacing: .07em; color: var(--text-muted); text-transform: uppercase; text-align: left; white-space: nowrap; background: #fafbff; }
+  thead th { padding: 12px 10px; font-size: 11px; font-weight: 700; letter-spacing: .07em; color: var(--text-muted); text-transform: uppercase; text-align: left; white-space: nowrap; background: #fafbff; }
   tbody tr { border-bottom: 1px solid var(--border); transition: background .12s; animation: fadeIn .25s ease both; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: var(--row-hover); }
-  tbody td { padding: 13px 16px; font-size: 13.5px; vertical-align: middle; }
+  tbody td { padding: 13px 10px; font-size: 13.5px; vertical-align: middle; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
   .student-cell { display: flex; align-items: center; gap: 10px; }
@@ -271,7 +271,7 @@
   /* ── MODAL ── */
   .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.35); backdrop-filter: blur(3px); z-index: 50; align-items: center; justify-content: center; }
   .overlay.open { display: flex; }
-  .modal { background: #fff; border-radius: 16px; padding: 28px; width: 100%; max-width: 500px; box-shadow: 0 20px 60px rgba(0,0,0,.2); animation: slideUp .2s ease; margin: 16px; }
+  .modal { background: #fff; border-radius: 16px; padding: 28px; width: 100%; max-width: 500px; box-shadow: 0 20px 60px rgba(0,0,0,.2); animation: slideUp .2s ease; margin: 16px; overflow: hidden; max-height: 90vh; overflow-y: auto;}
   @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
   .modal-header h2 { font-size: 18px; font-weight: 800; }
@@ -281,7 +281,7 @@
   .form-group { display: flex; flex-direction: column; gap: 5px; }
   .form-group.full { grid-column: 1/-1; }
   .form-group label { font-size: 11px; font-weight: 700; color: var(--text-label); letter-spacing: .06em; text-transform: uppercase; }
-  .form-group input, .form-group select { border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; font-size: 13.5px; font-family: inherit; color: var(--text-primary); outline: none; transition: border-color .15s; background: var(--main-bg); }
+  .form-group input, .form-group select { border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; font-size: 13.5px; font-family: inherit; color: var(--text-primary); outline: none; transition: border-color .15s; background: var(--main-bg); min-width: 0; width: 100%;}
   .form-group input:focus, .form-group select:focus { border-color: var(--brand); background: #fff; }
   .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 22px; }
   .btn-cancel { padding: 10px 20px; border-radius: 9px; border: 1px solid var(--border); background: #fff; font-size: 13.5px; font-weight: 600; font-family: inherit; color: var(--text-label); cursor: pointer; transition: background .15s; }
@@ -308,6 +308,8 @@
   <a class="nav-item" href="{{ route('dashboard.index') }}"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
   <a class="nav-item" href={{ route('teachers.index') }}><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Teachers</a>
   <a class="nav-item active" href="{{ route('students.index') }}"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Students</a>
+    <a class="nav-item" href="{{ route('classes.index') }}"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Classes</a>
+
   <a class="nav-item" href="{{ route('attendances.index') }}"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Attendance</a>
   <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Finance</a>
   <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notice<span class="badge">5</span></a>
@@ -379,8 +381,8 @@
           <option value="female">Female</option>
         </select>
         <select class="filter-select" id="sortBy" onchange="sortTable()">
+          <option value="newest" selected>Newest first</option>
           <option value="oldest">Oldest first</option>
-          <option value="newest">Newest first</option>
           <option value="name_asc">Name (A → Z)</option>
           <option value="name_desc">Name (Z → A)</option>
         </select>
@@ -414,20 +416,25 @@
 
 <!-- ENROLL MODAL -->
 <div class="overlay" id="overlay" onclick="closeOnOverlay(event)">
-  <form class="modal" method="POST" action="{{ route('students.store') }}">
+  <form class="modal" id="studentForm" method="POST" action="{{ route('students.store') }}">
     @csrf
+    <input type="hidden" name="_method" id="formMethod" value="POST">
     <div class="modal-header">
-      <h2>Enroll New Student</h2>
-      <button class="close-btn" onclick="closeModal()">✕</button>
+      <h2 id="modalTitle">Enroll New Student</h2>
+      <button type="button" class="close-btn" onclick="closeModal()">✕</button>
     </div>
     <div class="form-grid">
       <div class="form-group full">
         <label>Full Name</label>
         <input name="fullname" type="text" id="f-name" placeholder="e.g. Emma Watson" required/>
       </div>
-      <div class="form-group full">
+      <div class="form-group">
         <label>Email</label>
         <input name="email" type="email" id="f-email" placeholder="e.g. student@gmail.com"/>
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input name="phone_number" type="text" id="f-phone_number" placeholder="e.g. 0612345678"/>
       </div>
       <div class="form-group">
         <label>Class</label>
@@ -453,20 +460,52 @@
       </div>
       <div class="form-group">
         <label>Date of Birth</label>
-        <input type="date" id="f-dob" name="date_of_birth"/>
+        <input type="date" id="f-dob" name="dob"/>
       </div>
       <div class="form-group full">
         <label>CIN</label>
-        <input type="text" name="cin" placeholder="e.g. X123456" required>
+        <input type="text" id="f-cin" name="cin" placeholder="e.g. X123456" required>
       </div>
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-submit" type="submit">Enroll Student</button>
+      <button class="btn-submit" id="submitBtn" type="submit">Enroll Student</button>
     </div>
   </form>
 </div>
 <!-- TOAST -->
+@if(session('success'))
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+    showToast(@json(session('success')));
+});
+</script>
+@endif
+
+@if ($errors->any())
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+    showToast(@json(implode("\n", $errors->all())));
+});
+</script>
+@endif
+<div class="overlay" id="deleteOverlay" onclick="if(event.target===this)closeDeleteModal()">
+  <form class="modal" id="deleteForm" method="POST" style="max-width:380px">
+    @csrf
+    @method('DELETE')
+    <div class="modal-header">
+      <h2>Delete Student</h2>
+      <button type="button" class="close-btn" onclick="closeDeleteModal()">✕</button>
+    </div>
+    <p style="color:var(--text-label);font-size:14px;margin-bottom:22px;line-height:1.6">
+      Are you sure you want to delete <strong id="deleteStudentName"></strong>? This action cannot be undone.
+    </p>
+    <div class="modal-actions">
+      <button type="button" class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+      <button type="submit" class="btn-submit" style="background:#dc2626">Delete</button>
+    </div>
+  </form>
+</div>
 <div class="toast" id="toast"><span id="toastMsg"></span></div>
 <script>
   // show teacher automatically
@@ -509,11 +548,23 @@ function render(){
       </div></td>
       <td><span class="stu-id">${s.user?.cin}</span></td>
       <td><span class="class-badge">${s.school_class?.name}</span></td>
-      <td style="font-size:13px;color:var(--text-label)">${s.school_class?.teacher.user?.fullname}</td>
+      <td style="font-size:12px;color:var(--text-label);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.school_class?.teacher.user?.fullname}</td>
       <td><span class="gender-badge gender-${s.user?.gender ?? ''}">${(s.user?.gender) ? s.user.gender.charAt(0).toUpperCase() + s.user.gender.slice(1) : 'N/A'} </span></td>
       <td><span class="dob">${fmtDob(s.user?.date_of_birth)}</span></td>
       <td><span class="status-badge ${sClass(s.status)}">${sLabel(s.status)}</span></td>
-      <td><button class="action-btn" onclick="viewProfile('${s.id}')">Profile</button></td>
+      <td style="white-space:nowrap">
+        <div style="display:flex;gap:6px;align-items:center;">
+          <a href="/students/${s.id}" title="View" style="width:30px;height:30px;border:1px solid var(--border);border-radius:7px;display:flex;align-items:center;justify-content:center;background:#fff;cursor:pointer;color:var(--brand);transition:background .15s;" onmouseover="this.style.background='var(--brand-light)'" onmouseout="this.style.background='#fff'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </a>
+          <a href="#" onclick="openEditModal(${JSON.stringify(s).replace(/"/g,'&quot;')})" title="Edit" style="width:30px;height:30px;border:1px solid var(--border);border-radius:7px;display:flex;align-items:center;justify-content:center;background:#fff;cursor:pointer;color:var(--leave-amber);transition:background .15s;" onmouseover="this.style.background='#fef9c3'" onmouseout="this.style.background='#fff'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </a>
+          <button onclick="deleteStudent('${s.id}')" title="Delete" style="width:30px;height:30px;border:1px solid var(--border);border-radius:7px;display:flex;align-items:center;justify-content:center;background:#fff;cursor:pointer;color:var(--inactive-red);transition:background .15s;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fff'">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          </button>
+        </div>
+      </td>
     </tr>
   `).join('');
 
@@ -576,18 +627,56 @@ function sortTable() {
   page = 1;
   render();
 }
-function openModal(){ document.getElementById('overlay').classList.add('open'); }
-function closeModal(){ document.getElementById('overlay').classList.remove('open'); }
-function closeOnOverlay(e){ if(e.target===e.currentTarget) closeModal(); }
+
+const BASE = '{{ url("students") }}';
+
+function openModal() {
+  document.getElementById('modalTitle').textContent  = 'Enroll New Student';
+  document.getElementById('studentForm').action      = '{{ route("students.store") }}';
+  document.getElementById('formMethod').value        = 'POST';
+  document.getElementById('submitBtn').textContent   = 'Enroll Student';
+  ['f-name','f-email','f-phone_number','f-dob','f-cin'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-class').value  = '';
+  document.getElementById('f-teacher').value = '';
+  document.getElementById('f-gender').value = '';
+  document.getElementById('overlay').classList.add('open');
+}
+
+function openEditModal(student) {
+  document.getElementById('modalTitle').textContent  = 'Edit Student';
+  document.getElementById('studentForm').action      = `${BASE}/${student.id}`;
+  document.getElementById('formMethod').value        = 'PUT';
+  document.getElementById('submitBtn').textContent   = 'Save Changes';
+  document.getElementById('f-name').value         = student.user?.fullname || '';
+  document.getElementById('f-email').value        = student.user?.email || '';
+  document.getElementById('f-phone_number').value = student.user?.phone_number || '';
+  document.getElementById('f-dob').value          = student.user?.date_of_birth?.slice(0,10) || '';
+  document.getElementById('f-cin').value          = student.user?.cin || '';
+  document.getElementById('f-gender').value       = student.user?.gender || '';
+  document.getElementById('f-class').value        = student.school_class?.id || '';
+  document.getElementById('f-teacher').value      = student.school_class?.teacher?.user?.fullname || '';
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeModal()         { document.getElementById('overlay').classList.remove('open'); }
+function closeOnOverlay(e)    { if(e.target===e.currentTarget) closeModal(); }
 
 function viewProfile(id){
   console.log("hi");
   const s=students.find(x=>x.id == id);
-  if(s) showToast('👤 Opening profile for '+s.user?.fname+'…');
+  if(s) showToast('👤 Opening profile for '+s.user?.fullname+'…');
   setTimeout(() => {
     window.location.href = `/students/${id}`;
   }, 2000); // 2 seconds
 }
+
+function deleteStudent(id) {
+  const student = students.find(s => s.id == id);
+  document.getElementById('deleteStudentName').textContent = student?.user?.fullname || 'this student';
+  document.getElementById('deleteForm').action = `${BASE}/${id}`;
+  document.getElementById('deleteOverlay').classList.add('open');
+}
+function closeDeleteModal() { document.getElementById('deleteOverlay').classList.remove('open'); }
 
 let toastTimer;
 function showToast(msg){

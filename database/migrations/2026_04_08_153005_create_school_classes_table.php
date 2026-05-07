@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('name'); // class name
             $table->foreignId('teacher_id')
                   ->nullable()
-                  ->unique()
                   ->constrained('teachers')
                   ->cascadeOnUpdate()
                   ->restrictOnDelete();

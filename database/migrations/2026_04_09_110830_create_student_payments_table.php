@@ -11,19 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('student_payments', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('student_id')->constrained()->cascadeOnDelete();
-            $table->date('month'); // 2026-04-01
-            $table->boolean('is_paid')->default(false);
-            $table->unique(['student_id', 'month']); //! Ensure a student has only **one payment record per month**
-            $table->timestamps(); //? CREATED_AT = PAID_AT 
+    Schema::create('student_payments', function (Blueprint $table) {
+        $table->id();
 
-            //! Who didnt pay this month LOGIC
-            $table->index(['student_id', 'month']);
+        $table->foreignId('student_id')
+            ->constrained("students")
+            ->cascadeOnDelete();
+
+        $table->date('due_date');   // when student should pay
+        $table->date('paid_at')->nullable(); // when actually paid
+
+        $table->decimal('amount', 10, 2)->default(500);
+
+        $table->unique(['student_id', 'due_date']);
+
+        $table->timestamps();
         });
     }
-
+    
     /**
      * Reverse the migrations.
      */

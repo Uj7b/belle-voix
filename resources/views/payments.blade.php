@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Belle Voix – Teachers</title>
+<title>Belle Voix – Students</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
@@ -205,6 +205,16 @@
   .enroll-btn:hover { background: var(--brand-dark); transform: translateY(-1px); }
   .enroll-btn:active { transform: translateY(0); }
 
+
+  .badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:20px;
+}
+  .badge-retard-0 { background:#DCFCE7; color: #166534; }
+  .badge-retard-1 { background:#FEF3C7; color:#92400E; }
+  .badge-retard-2 { background:#FED7AA; color:#9A3412; }
+  .badge-retard-3 { background:#FEE2E2; color:#991B1B; }
+  .badge-retard::before { content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
   /* ── TABLE CARD ── */
   .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
   .table-toolbar { display: flex; align-items: center; gap: 10px; padding: 16px 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
@@ -252,12 +262,10 @@
   .dob { color: var(--text-label); font-size: 13px; }
   .status-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; padding: 4px 11px; border-radius: 20px; }
   .status-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-  .s-active    { background: #dcfce7; color: var(--active-green); }
-  .s-active::before { background: var(--active-green); }
-  .s-inactive  { background: #fee2e2; color: var(--inactive-red); }
-  .s-inactive::before { background: var(--inactive-red); }
-  .s-withdrawn { background: #fef9c3; color: var(--leave-amber); }
-  .s-withdrawn::before { background: var(--leave-amber); }
+  .s-paid    { background: #dcfce7; color: var(--active-green); }
+  .s-paid::before { background: var(--active-green); }
+  .s-unpaid  { background: #fee2e2; color: var(--inactive-red); }
+  .s-unpaid::before { background: var(--inactive-red); }
   .action-btn { border: 1px solid var(--border); background: #fff; border-radius: 7px; padding: 6px 14px; font-size: 12.5px; font-weight: 600; font-family: inherit; color: var(--text-label); cursor: pointer; transition: border-color .15s, color .15s, background .15s; }
   .action-btn:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
 
@@ -305,10 +313,10 @@
     Belle voix
   </div>
   <div class="sidebar-section-label">Menu</div>
-  <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
-  <a class="nav-item active" href="{{ route('teachers.index') }}"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Teachers</a>
-  <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Students</a>
-  <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Attendance</a>
+  <a class="nav-item" href="{{ route('dashboard.index') }}"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+  <a class="nav-item" href={{ route('teachers.index') }}><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Teachers</a>
+  <a class="nav-item active" href="{{ route('students.index') }}"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Students</a>
+  <a class="nav-item" href="{{ route('attendances.index') }}"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Attendance</a>
   <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Finance</a>
   <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notice<span class="badge">5</span></a>
   <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar</a>
@@ -327,7 +335,8 @@
 <!-- MAIN -->
 <div class="main">
   <header class="topbar">
-    <div class="search-wrap">
+    {{-- ! hidden --}}
+    <div class="search-wrap" hidden>
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input type="text" placeholder="Search anything…"/>
     </div>
@@ -344,12 +353,12 @@
   <div class="content">
     <div class="page-header">
       <div>
-        <h1>Teachers</h1>
-        <div class="sub" id="enrollCount">{{ $teacherCount }} enrolled teachers</div>
+        <h1>Students</h1>
+        <div class="sub" id="enrollCount">{{ $studentCount }} enrolled students</div>
       </div>
       <button class="enroll-btn" onclick="openModal()">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Enroll Teacher
+        Enroll Student
       </button>
     </div>
 
@@ -357,8 +366,15 @@
       <div class="table-toolbar">
         <div class="tb-search">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="searchInput" placeholder="Search teachers…" oninput="filterTable()"/>
+          <input type="text" id="searchInput" placeholder="Search students…" oninput="filterTable()"/>
         </div>
+        <select class="filter-select" id="classFilter" onchange="filterTable()">
+          {{-- INFO options are fetched from DB --}}
+          <option value="">Select class</option>
+          @foreach($classes as $class)
+          <option value="{{ $class->id }}">{{ $class->name }}</option>
+          @endforeach
+        </select>
         <select class="filter-select" id="statusFilter" onchange="filterTable()">
           <option value="">All Status</option>
           <option value="active">Active</option>
@@ -371,12 +387,10 @@
           <option value="female">Female</option>
         </select>
         <select class="filter-select" id="sortBy" onchange="sortTable()">
-          <option value="newest">Newest first</option>
           <option value="oldest">Oldest first</option>
+          <option value="newest">Newest first</option>
           <option value="name_asc">Name (A → Z)</option>
           <option value="name_desc">Name (Z → A)</option>
-          <option value="classes_desc">Most Classes</option>
-          <option value="classes_asc">Least Classes</option>
         </select>
       </div>
 
@@ -386,10 +400,11 @@
             <tr>
               <th>Fullname</th>
               <th>Cin</th>
-              <th>Classes</th>
-              <th>Gender</th>
-              <th>Date of Birth</th>
-              <th>Status</th>
+              <th>Class</th>
+              <th>Amount</th>
+              <th>Due date</th>
+              <th>Paid At</th>
+              <th>Overdue</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -407,26 +422,34 @@
 
 <!-- ENROLL MODAL -->
 <div class="overlay" id="overlay" onclick="closeOnOverlay(event)">
-  <div class="modal">
-    <form id="teacherForm" action="{{ route('teachers.store') }}" method="POST">
+  <form class="modal" method="POST" action="{{ route('students.store') }}">
     @csrf
-    <input type="hidden" name="_method" id="formMethod" value="POST">
     <div class="modal-header">
-      <h2 id="modalTitle">Enroll New Teacher</h2>
-      <button type="button" class="close-btn" onclick="closeModal()">✕</button>
+      <h2>Enroll New Student</h2>
+      <button class="close-btn" onclick="closeModal()">✕</button>
     </div>
     <div class="form-grid">
       <div class="form-group full">
         <label>Full Name</label>
-        <input type="text" id="f-name" placeholder="e.g. Emma Watson" name="fullname" required/>
+        <input name="fullname" type="text" id="f-name" placeholder="e.g. Emma Watson" required/>
       </div>
       <div class="form-group full">
         <label>Email</label>
-        <input type="email" id="f-email" placeholder="teacher@gmail.com" name="email" required/>
+        <input name="email" type="email" id="f-email" placeholder="e.g. student@gmail.com"/>
       </div>
-      <div class="form-group full">
-        <label>Phone number</label>
-        <input name="phone_number" type="text" id="f-phone_number" placeholder="e.g. 0612345678"/>
+      <div class="form-group">
+        <label>Class</label>
+        {{-- INFO options are fetched from DB --}}
+        <select id="f-class" name="class_id">
+          <option value="">Select class</option>
+          @foreach($classes as $class)
+          <option value="{{ $class->id }}" data-teacher="{{ $class->teacher?->user?->fullname }}">{{ $class->name }}</option>
+          @endforeach
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Teacher</label>
+        <input type="text" id="f-teacher" disabled placeholder="Teacher will appear here">
       </div>
       <div class="form-group">
         <label>Gender</label>
@@ -438,45 +461,36 @@
       </div>
       <div class="form-group">
         <label>Date of Birth</label>
-        <input type="date" id="f-dob" name="date_of_birth" required/>
+        <input type="date" id="f-dob" name="date_of_birth"/>
       </div>
       <div class="form-group full">
         <label>CIN</label>
-        <input type="text" id="f-cin" placeholder="e.g. X123456" name="cin" required>
+        <input type="text" name="cin" placeholder="e.g. X123456" required>
       </div>
     </div>
     <div class="modal-actions">
-      <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button id="submitBtn" class="btn-submit" type="submit">Enroll Teacher</button>
-    </div>
-    </form>
-  </div>
-</div>
-
-<div class="overlay" id="deleteOverlay" onclick="if(event.target===this)closeDeleteModal()">
-  <form class="modal" id="deleteForm" method="POST" style="max-width:380px">
-    @csrf
-    @method('DELETE')
-    <div class="modal-header">
-      <h2>Delete Teacher</h2>
-      <button type="button" class="close-btn" onclick="closeDeleteModal()">✕</button>
-    </div>
-    <p style="color:var(--text-label);font-size:14px;margin-bottom:22px;line-height:1.6">
-      Are you sure you want to delete <strong id="deleteTeacherName"></strong>? This action cannot be undone.
-    </p>
-    <div class="modal-actions">
-      <button type="button" class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
-      <button type="submit" class="btn-submit" style="background:#dc2626">Delete</button>
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-submit" type="submit">Enroll Student</button>
     </div>
   </form>
 </div>
 <!-- TOAST -->
 <div class="toast" id="toast"><span id="toastMsg"></span></div>
 <script>
+  // show teacher automatically
+document.getElementById('f-class').addEventListener('change', function () {
+    const selected = this.options[this.selectedIndex];
+    const teacher = selected.getAttribute('data-teacher');
+
+    document.getElementById('f-teacher').value = teacher || '';
+});
+
+ //
 const COLORS = ['#3b6ef8','#8b5cf6','#10b981','#f59e0b','#ef4444','#06b6d4','#ec4899','#84cc16','#f97316','#6366f1','#14b8a6','#a855f7','#0ea5e9','#d946ef','#22c55e'];
-let teachers = @json($teachers);
-console.log(teachers);
-let filtered = [...teachers];
+window.payments = @json($payments);
+console.log(@json($payments));
+console.log(payments);
+let filtered = [...payments];
 let page = 1;
 const PER = 10;
 
@@ -487,43 +501,32 @@ function fmtDob(d){
   const [y,m,day]=d.split('-');
   return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m-1]+' '+parseInt(day)+', '+y;
 }
-const sClass = s=>({active:'s-active',inactive:'s-inactive',withdrawn:'s-withdrawn'}[s]||'s-active');
-const sLabel = s=>({active:'Active',inactive:'Inactive',withdrawn:'Withdrawn'}[s]||s);
+const sClass = s => s === 'Paid' ? 's-paid' : 's-unpaid';
+const sLabel = s => s === 'Paid' ? 'Paid' : 'Unpaid';
 
 function render(){
   const total=filtered.length, pages=Math.max(1,Math.ceil(total/PER));
   if(page>pages) page=pages;
   const start=(page-1)*PER, slice=filtered.slice(start,start+PER);
 
-  document.getElementById('tableBody').innerHTML = slice.map((t,i)=>`
+  document.getElementById('tableBody').innerHTML = slice.map((p,i)=>`
     <tr style="animation-delay:${i*.03}s">
       <td><div class="student-cell">
-        <div class="stu-avatar" style="background:${colorFor(t.user?.fullname)}">${initials(t.user?.fullname)}</div>
-        <div><div class="stu-name">${t.user?.fullname}</div><div class="stu-email">${t.user.email}</div></div>
+        <div class="stu-avatar" style="background:${colorFor(p.student?.user?.fullname)}">${initials(p.student?.user?.fullname)}</div>
+        <div><div class="stu-name">${p.student?.user?.fullname}</div><div class="stu-email">${p.student?.user?.email}</div></div>
       </div></td>
-      <td><span class="stu-id">${t.user?.cin}</span></td>
-      <td><span class="class-badge">${t.school_classes_count}</span></td>
-      <td><span class="gender-badge gender-${t.user?.gender}">${t.user?.gender.charAt(0).toUpperCase()+t.user?.gender.slice(1)}</span></td>
-      <td><span class="dob">${fmtDob(t.user?.date_of_birth)}</span></td>
-      <td><span class="status-badge ${sClass(t.status)}">${sLabel(t.status)}</span></td>
-      <td style="white-space:nowrap">
-        <div style="display:flex;gap:6px;align-items:center;">
-          <a href="/teachers/${t.id}" title="View" style="width:30px;height:30px;border:1px solid var(--border);border-radius:7px;display:flex;align-items:center;justify-content:center;background:#fff;cursor:pointer;color:var(--brand);transition:background .15s;" onmouseover="this.style.background='var(--brand-light)'" onmouseout="this.style.background='#fff'">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </a>
-          <a href="#" onclick="openEditModal(${JSON.stringify(t).replace(/"/g,'&quot;')})" title="Edit" style="width:30px;height:30px;border:1px solid var(--border);border-radius:7px;display:flex;align-items:center;justify-content:center;background:#fff;cursor:pointer;color:var(--leave-amber);transition:background .15s;" onmouseover="this.style.background='#fef9c3'" onmouseout="this.style.background='#fff'">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          </a>
-          <button onclick="deleteTeacher('${t.id}')" title="Delete" style="width:30px;height:30px;border:1px solid var(--border);border-radius:7px;display:flex;align-items:center;justify-content:center;background:#fff;cursor:pointer;color:var(--inactive-red);transition:background .15s;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fff'">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-          </button>
-        </div>
-      </td>
+      <td><span class="stu-id">${p.student?.user?.cin}</span></td>
+      <td><span class="class-badge">${p.student?.school_class?.name}</span></td>
+      <td style="font-size:13px;color:var(--text-label)">${p.amount} DH</td>
+      <td><span class="dob">${p.due_date}</span></td>
+      <td><span class="dob">${p.paid_at}</span></td>
+      <td><span class="badge badge-retard-${(d => d === 0 ? '0' : d <= 3 ? '1' : d <= 7 ? '2' : '3')(Math.max(0, Math.floor(((p.paid_at ? new Date(p.paid_at) : new Date()) - new Date(p.due_date)) / 86400000)))}">${(d => d > 0 ? `${d} days late` : 'On time')(Math.max(0, Math.floor(((p.paid_at ? new Date(p.paid_at) : new Date()) - new Date(p.due_date)) / 86400000)))}</span></td>
+      <td><button class="action-btn" onclick="viewProfile('${p.student?.id}')">Profile</button></td>
     </tr>
   `).join('');
 
   const end=Math.min(start+PER,total);
-  document.getElementById('tfInfo').textContent = total===0?'No teachers found':`Showing ${start+1}–${end} of ${total} teacher${total!==1?'s':''}`;
+  document.getElementById('tfInfo').textContent = total===0?'No payments found':`Showing ${start+1}–${end} of ${total} student${total!==1?'s':''}`;
 
   const pg=document.getElementById('pagination'); pg.innerHTML='';
   const btn=(label,p,active=false)=>{const b=document.createElement('button');b.className='pg-btn'+(active?' active':'');b.textContent=label;b.onclick=()=>{page=p;render();};return b;};
@@ -537,21 +540,24 @@ function render(){
 
 function filterTable() {
   const q = document.getElementById('searchInput').value.toLowerCase();
+  const cls = document.getElementById('classFilter').value;
   const st = document.getElementById('statusFilter').value;
   const gn = document.getElementById('genderFilter').value;
-  filtered = (teachers || []).filter(t =>
+  filtered = (payments || []).filter(p =>
     (!q ||
-      t.user?.fullname?.toLowerCase().includes(q) ||
-      t.user?.cin?.toLowerCase().includes(q)
+      p.student?.user?.fullname?.toLowerCase().includes(q) ||
+      String(p.id).toLowerCase().includes(q) ||
+      p.teacher?.user?.fname?.toLowerCase().includes(q) ||
+      p.user?.cin?.toLowerCase().includes(q)
     ) &&
-    (!st || t.status === st) &&
-    (!gn || t.user?.gender == gn)
+    (!cls || s.school_class?.name == cls || s.school_class?.id == cls) &&
+    (!st || s.status == st) &&
+    (!gn || s.user?.gender == gn)
   );
 
   page = 1;
   render();
 }
-
 function sortTable() {
   const value = document.getElementById('sortBy').value;
 
@@ -575,78 +581,21 @@ function sortTable() {
     filtered.sort((a, b) => a.id - b.id);
   }
 
-  if (value === "classes_desc") {
-    filtered.sort((a, b) => b.school_classes_count - a.school_classes_count);
-  }
-
-  if (value === "classes_asc") {
-    filtered.sort((a, b) => a.school_classes_count - b.school_classes_count);
-  }
-
-
   page = 1;
   render();
 }
-const BASE = '{{ url("teachers") }}';
-
-function openModal() {
-  document.getElementById('modalTitle').textContent  = 'Enroll New Teacher';
-  document.getElementById('teacherForm').action      = '{{ route("teachers.store") }}';
-  document.getElementById('formMethod').value        = 'POST';
-  document.getElementById('submitBtn').textContent   = 'Enroll Teacher';
-  ['f-name','f-email','f-phone_number','f-dob','f-cin'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('f-gender').value = '';
-  document.getElementById('overlay').classList.add('open');
-}
-
-function openEditModal(teacher) {
-  document.getElementById('modalTitle').textContent  = 'Edit Teacher';
-  document.getElementById('teacherForm').action      = `${BASE}/${teacher.id}`;
-  document.getElementById('formMethod').value        = 'PUT';
-  document.getElementById('submitBtn').textContent   = 'Save Changes';
-  document.getElementById('f-name').value         = teacher.user?.fullname || '';
-  document.getElementById('f-email').value        = teacher.user?.email || '';
-  document.getElementById('f-phone_number').value = teacher.user?.phone_number || '';
-  document.getElementById('f-dob').value          = teacher.user?.date_of_birth?.slice(0,10) || '';
-  document.getElementById('f-cin').value          = teacher.user?.cin || '';
-  document.getElementById('f-gender').value       = teacher.user?.gender || '';
-  document.getElementById('overlay').classList.add('open');
-}
-
-function closeModal()         { document.getElementById('overlay').classList.remove('open'); }
-function closeOnOverlay(e)    { if(e.target===e.currentTarget) closeModal(); }
-
-
-let nextNum=teachers.length+1;
-function enrollTeacher(){
-  const name=document.getElementById('f-name').value.trim();
-  const email=document.getElementById('f-email').value.trim();
-  const gender=document.getElementById('f-gender').value;
-  const dob=document.getElementById('f-dob').value;
-  if(!name||!email||!gender||!dob){ showToast('⚠️ Please fill in all required fields.'); return; }
-  const id='STU-'+String(nextNum).padStart(3,'0');
-  students.push({id,name,email,cls,teacher,gender,dob,status});
-  nextNum++;
-  document.getElementById('enrollCount').textContent=students.length.toLocaleString()+' enrolled teachers';
-  ['f-name','f-email','f-gender','f-dob'].forEach(i=>document.getElementById(i).value='');
-  filtered=[...students]; page=1; filterTable();
-  closeModal(); showToast('✅ '+name+' enrolled successfully!');
-}
+function openModal(){ document.getElementById('overlay').classList.add('open'); }
+function closeModal(){ document.getElementById('overlay').classList.remove('open'); }
+function closeOnOverlay(e){ if(e.target===e.currentTarget) closeModal(); }
 
 function viewProfile(id){
-  const t=teachers.find(x=>x.id == id);
-  if(t) showToast('👤 Opening profile for '+t.user?.fullname+'…');
+  console.log("hi");
+  const s=students.find(x=>x.id == id);
+  if(s) showToast('👤 Opening profile for '+s.user?.fname+'…');
   setTimeout(() => {
-    window.location.href = `/teachers/${id}`;
+    window.location.href = `/students/${id}`;
   }, 2000); // 2 seconds
 }
-function deleteTeacher(id) {
-  const teacher = teachers.find(t => t.id == id);
-  document.getElementById('deleteTeacherName').textContent = teacher?.user?.fullname || 'this teacher';
-  document.getElementById('deleteForm').action = `${BASE}/${id}`;
-  document.getElementById('deleteOverlay').classList.add('open');
-}
-function closeDeleteModal() { document.getElementById('deleteOverlay').classList.remove('open'); }
 
 let toastTimer;
 function showToast(msg){

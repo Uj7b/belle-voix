@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Belle Voix – Students</title>
+<title>Belle Voix – Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
@@ -250,6 +250,15 @@
   .gender-male   { background: #eff6ff; color: #1d4ed8; }
   .gender-female { background: #fdf2f8; color: #be185d; }
   .dob { color: var(--text-label); font-size: 13px; }
+  .badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:20px;
+}
+  .badge-retard-0 { background:#DCFCE7; color: #166534; }
+  .badge-retard-1 { background:#FEF3C7; color:#92400E; }
+  .badge-retard-2 { background:#FED7AA; color:#9A3412; }
+  .badge-retard-3 { background:#FEE2E2; color:#991B1B; }
+  .badge-retard::before { content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
   .status-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; padding: 4px 11px; border-radius: 20px; }
   .status-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
   .s-active    { background: #dcfce7; color: var(--active-green); }
@@ -292,6 +301,29 @@
   /* ── TOAST ── */
   .toast { position: fixed; bottom: 24px; right: 24px; background: #1a1d2e; color: #fff; padding: 12px 18px; border-radius: 10px; font-size: 13.5px; font-weight: 500; display: flex; align-items: center; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.2); transform: translateY(60px); opacity: 0; transition: all .3s ease; z-index: 999; }
   .toast.show { transform: translateY(0); opacity: 1; }
+
+
+  /* ── STUDENT SEARCH SELECT ── */
+.stu-search-wrap { position: relative; }
+.stu-search-wrap input { width: 100%; }
+.stu-dropdown {
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+  background: #fff; border: 1px solid var(--border); border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12); z-index: 999;
+  max-height: 220px; overflow-y: auto; display: none;
+}
+.stu-dropdown.open { display: block; }
+.stu-opt {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; cursor: pointer; transition: background .12s;
+  border-bottom: 1px solid var(--border);
+}
+.stu-opt:last-child { border-bottom: none; }
+.stu-opt:hover { background: var(--brand-light); }
+.stu-opt .stu-avatar { width: 30px; height: 30px; border-radius: 7px; font-size: 11px; font-weight: 700; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.stu-opt-info .opt-name { font-size: 13px; font-weight: 600; }
+.stu-opt-info .opt-sub  { font-size: 11px; color: var(--text-muted); }
+.stu-empty { padding: 12px; text-align: center; font-size: 13px; color: var(--text-muted); }
 </style>
 </head>
 <body>
@@ -308,8 +340,9 @@
   <a class="nav-item active" href="{{ route('dashboard.index') }}"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
   <a class="nav-item" href={{ route('teachers.index') }}><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Teachers</a>
   <a class="nav-item" href="{{ route('students.index') }}"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Students</a>
+  <a class="nav-item" href="{{ route('classes.index') }}"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Classes</a>
   <a class="nav-item" href="{{ route('attendances.index') }}"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Attendance</a>
-  <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Finance</a>
+  <a class="nav-item" href="{{ route('payments.index') }}"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Payments</a>
   <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notice<span class="badge">5</span></a>
   <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar</a>
   <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Library</a>
@@ -345,12 +378,12 @@
   <div class="content">
     <div class="page-header">
       <div>
-        <h1>Students</h1>
-        <div class="sub" id="enrollCount">{{ $studentCount }} enrolled students</div>
+        <h1>Dashboard</h1>
+        <div class="sub" id="enrollCount">{{ $studentCount }} @php $h = now()->hour; $g = $h < 12 ? 'Good morning' : ($h < 18 ? 'Good afternoon' : 'Good evening'); @endphp {{ $g }}, Admin · {{ now()->translatedFormat('l, F j, Y') }}</div>
       </div>
       <button class="enroll-btn" onclick="openModal()">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Enroll Student
+        Record Payment
       </button>
     </div>
 
@@ -369,14 +402,8 @@
         </select> 
         <select class="filter-select" id="statusFilter" onchange="filterTable()">
           <option value="">All Status</option>
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-          <option value="withdrawn">Withdrawn</option>
-        </select>
-        <select class="filter-select" id="genderFilter" onchange="filterTable()">
-          <option value="">All Genders</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
+          <option value="paid">Paid</option>
+          <option value="unpaid">Unpaid</option>
         </select>
         <select class="filter-select" id="sortBy" onchange="sortTable()">
           <option value="oldest">Oldest first</option>
@@ -393,11 +420,11 @@
               <th>Fullname</th>
               <th>Cin</th>
               <th>Class</th>
-              <th>Teacher</th>
-              <th>Gender</th>
-              <th>Date of Birth</th>
+              <th>Amount</th>
+              <th>Due date</th>
+              <th>Overdue</th>
               <th>Status</th>
-              <th>Action</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
@@ -414,75 +441,51 @@
 
 <!-- ENROLL MODAL -->
 <div class="overlay" id="overlay" onclick="closeOnOverlay(event)">
-  <form class="modal" method="POST" action="{{ route('students.store') }}">
+  <form class="modal" method="POST" action="{{ route('payments.store') }}">
     @csrf
     <div class="modal-header">
-      <h2>Enroll New Student</h2>
+      <h2>Add New Payment</h2>
       <button class="close-btn" onclick="closeModal()">✕</button>
     </div>
     <div class="form-grid">
+      {{-- ! SEARCH SELECT --}}
       <div class="form-group full">
-        <label>Full Name</label>
-        <input name="fullname" type="text" id="f-name" placeholder="e.g. Emma Watson" required/>
-      </div>
+  <label>Student</label>
+  <div class="stu-search-wrap">
+    <input type="text" id="f-stu-search" placeholder="Search by name or CIN…" autocomplete="off" oninput="stuSearch(this.value)" onfocus="stuSearch(this.value)" required/>
+    <div class="stu-dropdown" id="stuDropdown"></div>
+  </div>
+  {{-- hidden fields filled automatically --}}
+  <input type="hidden" name="student_id" id="f-student-id">
+  <input type="hidden" name="fullname"   id="f-name">
+</div>
       <div class="form-group full">
         <label>Email</label>
-        <input name="email" type="email" id="f-email" placeholder="e.g. student@gmail.com"/>
-      </div>
-      <div class="form-group">
-        <label>Class</label>
-        {{-- INFO options are fetched from DB --}}
-        <select id="f-class" name="class_id">
-          <option value="">Select class</option>
-          @foreach($classes as $class)
-          <option value="{{ $class->id }}" data-teacher="{{ $class->teacher?->user?->fullname }}">{{ $class->name }}</option>
-          @endforeach
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Teacher</label>
-        <input type="text" id="f-teacher" disabled placeholder="Teacher will appear here">
-      </div>
-      <div class="form-group">
-        <label>Gender</label>
-        <select id="f-gender" name="gender">
-          <option value="">Select gender</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Date of Birth</label>
-        <input type="date" id="f-dob" name="date_of_birth"/>
+        <input name="email" type="email" id="f-email" placeholder="e.g. student@gmail.com" readonly/>
       </div>
       <div class="form-group full">
         <label>CIN</label>
-        <input type="text" name="cin" placeholder="e.g. X123456" required>
+        <input type="text" id="f-cin" name="cin" placeholder="e.g. X123456" readonly>
+      </div>
+      <div class="form-group full">
+        <label>Amount</label>
+        <input type="number" id="f-cin" name="amount" value="500" readonly>
       </div>
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-submit" type="submit">Enroll Student</button>
+      <button class="btn-submit" type="submit">Add Payment</button>
     </div>
   </form>
 </div>
 <!-- TOAST -->
 <div class="toast" id="toast"><span id="toastMsg"></span></div>
 <script>
-  // show teacher automatically
-document.getElementById('f-class').addEventListener('change', function () {
-    const selected = this.options[this.selectedIndex];
-    const teacher = selected.getAttribute('data-teacher');
-
-    document.getElementById('f-teacher').value = teacher || '';
-});
-
- //
 const COLORS = ['#3b6ef8','#8b5cf6','#10b981','#f59e0b','#ef4444','#06b6d4','#ec4899','#84cc16','#f97316','#6366f1','#14b8a6','#a855f7','#0ea5e9','#d946ef','#22c55e'];
-window.students = @json($students);
-console.log(@json($students));
-console.log(students);
-let filtered = [...students];
+window.payments = @json($payments);
+console.log(@json($payments));
+console.log(payments);
+let filtered = [...payments];
 let page = 1;
 const PER = 10;
 
@@ -501,24 +504,24 @@ function render(){
   if(page>pages) page=pages;
   const start=(page-1)*PER, slice=filtered.slice(start,start+PER);
 
-  document.getElementById('tableBody').innerHTML = slice.map((s,i)=>`
+  document.getElementById('tableBody').innerHTML = slice.map((p,i)=>`
     <tr style="animation-delay:${i*.03}s">
       <td><div class="student-cell">
-        <div class="stu-avatar" style="background:${colorFor(s.user?.fullname)}">${initials(s.user?.fullname)}</div>
-        <div><div class="stu-name">${s.user?.fullname}</div><div class="stu-email">${s.user.email}</div></div>
+        <div class="stu-avatar" style="background:${colorFor(p.student?.user?.fullname)}">${initials(p.student?.user?.fullname)}</div>
+        <div><div class="stu-name">${p.student?.user?.fullname}</div><div class="stu-email">${p.student?.user?.email}</div></div>
       </div></td>
-      <td><span class="stu-id">${s.user?.cin}</span></td>
-      <td><span class="class-badge">${s.school_class?.name}</span></td>
-      <td style="font-size:13px;color:var(--text-label)">${s.school_class?.teacher.user?.fullname}</td>
-      <td><span class="gender-badge gender-${s.user?.gender ?? ''}">${(s.user?.gender) ? s.user.gender.charAt(0).toUpperCase() + s.user.gender.slice(1) : 'N/A'} </span></td>
-      <td><span class="dob">${fmtDob(s.user?.date_of_birth)}</span></td>
-      <td><span class="status-badge ${sClass(s.status)}">${sLabel(s.status)}</span></td>
-      <td><button class="action-btn" onclick="viewProfile('${s.id}')">Profile</button></td>
+      <td><span class="stu-id">${p.student?.user?.cin}</span></td>
+      <td><span class="class-badge">${p.student?.school_class?.name}</span></td>
+      <td style="font-size:13px;color:var(--text-label)">${p.amount} DH</td>
+      <td><span class="dob">${p.due_date}</span></td>
+      <td><span class="badge badge-retard-${(d => d === 0 ? '0' : d <= 3 ? '1' : d <= 7 ? '2' : '3')(Math.max(0, Math.floor(((p.paid_at ? new Date(p.paid_at) : new Date()) - new Date(p.due_date)) / 86400000)))}">${(d => d > 0 ? `${d} days late` : 'On time')(Math.max(0, Math.floor(((p.paid_at ? new Date(p.paid_at) : new Date()) - new Date(p.due_date)) / 86400000)))}</span></td>
+      <td><span class="status-badge ${p.paid_at ? 's-paid' : 's-unpaid'}">${p.paid_at ? 'paid' : 'unpaid'}</span></td>
+      <td><button class="action-btn" onclick="viewProfile('${p.student?.id}')">Profile</button></td>
     </tr>
   `).join('');
 
   const end=Math.min(start+PER,total);
-  document.getElementById('tfInfo').textContent = total===0?'No students found':`Showing ${start+1}–${end} of ${total} student${total!==1?'s':''}`;
+  document.getElementById('tfInfo').textContent = total===0?'No payments found':`Showing ${start+1}–${end} of ${total} student${total!==1?'s':''}`;
 
   const pg=document.getElementById('pagination'); pg.innerHTML='';
   const btn=(label,p,active=false)=>{const b=document.createElement('button');b.className='pg-btn'+(active?' active':'');b.textContent=label;b.onclick=()=>{page=p;render();};return b;};
@@ -530,26 +533,25 @@ function render(){
   if(page<pages) pg.appendChild(btn('›',page+1));
 }
 
+
 function filterTable() {
   const q = document.getElementById('searchInput').value.toLowerCase();
   const cls = document.getElementById('classFilter').value;
   const st = document.getElementById('statusFilter').value;
-  const gn = document.getElementById('genderFilter').value;
-  filtered = (students || []).filter(s =>
+  filtered = (payments || []).filter(p =>
     (!q ||
-      s.user?.fullname?.toLowerCase().includes(q) ||
-      String(s.id).toLowerCase().includes(q) ||
-      s.teacher?.user?.fname?.toLowerCase().includes(q) ||
-      s.user?.cin?.toLowerCase().includes(q)
+      p.student?.user?.fullname.toLowerCase().includes(q) ||
+      String(p.student?.user.cin).toLowerCase().includes(q)
     ) &&
-    (!cls || s.school_class?.name == cls || s.school_class?.id == cls) &&
-    (!st || s.status == st) &&
-    (!gn || s.user?.gender == gn)
+    (!cls || p.student?.school_class?.name == cls || p.student?.school_class?.id == cls) &&
+    (!st ||
+  (st === 'paid' ? !!p.paid_at : !p.paid_at)
+)
   );
-
   page = 1;
   render();
 }
+
 function sortTable() {
   const value = document.getElementById('sortBy').value;
 
@@ -599,6 +601,83 @@ function showToast(msg){
 }
 
 render();
+</script>
+<script>
+// Build a deduplicated student list from the payments already in memory
+// If you want ALL students (not just those with payments), add:
+//   window.allStudents = @json($students);   in your Blade and use that instead.
+
+window.allStudents = @json($students);
+
+const allStudents = window.allStudents || [];
+
+
+function stuSearch(q) {
+  const dd = document.getElementById('stuDropdown');
+  const term = q.toLowerCase().trim();
+
+  const matches = allStudents.filter(s =>
+    s.user?.fullname?.toLowerCase().includes(term) ||
+    String(s.user?.cin || '').toLowerCase().includes(term)
+  );
+
+  if (!matches.length) {
+    dd.innerHTML = '<div class="stu-empty">No students found</div>';
+  } else {
+    dd.innerHTML = matches.map(s => `
+      <div class="stu-opt" onclick="stuSelect(${s.id})">
+        <div class="stu-avatar" style="background:${colorFor(s.user?.fullname || '')}">${initials(s.user?.fullname || '?')}</div>
+        <div class="stu-opt-info">
+          <div class="opt-name">${s.user?.fullname}</div>
+          <div class="opt-sub">${s.user?.cin || ''} · ${s.school_class?.name || '—'}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+  dd.classList.add('open');
+}
+
+function stuSelect(id) {
+  const s = allStudents.find(x => x.id === id);
+  if (!s) return;
+
+  // Fill the visible search box and hidden fields
+  document.getElementById('f-stu-search').value  = s.user?.fullname || '';
+  document.getElementById('f-student-id').value  = s.id;
+  document.getElementById('f-name').value         = s.user?.fullname || '';
+
+  // Auto-fill the rest of the modal
+  document.getElementById('f-email').value        = s.user?.email   || '';
+  document.getElementById('f-cin').value          = s.user?.cin || '';
+
+  // Fill class and trigger teacher auto-fill
+
+  document.getElementById('stuDropdown').classList.remove('open');
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', e => {
+  if (!e.target.closest('.stu-search-wrap')) {
+    document.getElementById('stuDropdown')?.classList.remove('open');
+  }
+});
+
+// Clear auto-filled fields when modal closes
+const _origClose = window.closeModal;
+window.closeModal = function() {
+  _origClose();
+  ['f-stu-search','f-email','f-gender','f-dob'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  ['f-student-id','f-name'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('f-class').value = '';
+  document.getElementById('f-teacher').value = '';
+  document.getElementById('stuDropdown').classList.remove('open');
+};
 </script>
 </body>
 </html>
