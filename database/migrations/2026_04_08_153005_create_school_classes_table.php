@@ -17,8 +17,7 @@ return new class extends Migration
             $table->foreignId('teacher_id')
                   ->nullable()
                   ->constrained('teachers')
-                  ->cascadeOnUpdate()
-                  ->restrictOnDelete();
+                  ->cascadeOnUpdate();
             $table->enum('status',["pending","teaching"]);
             $table->timestamps();
         });

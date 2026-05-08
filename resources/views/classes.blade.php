@@ -530,18 +530,28 @@
 </div>
 
 <!-- DELETE CONFIRM MODAL -->
-<div class="overlay" id="deleteOverlay" onclick="closeDeleteOnOverlay(event)">
-  <form class="delete-modal" id="deleteForm" method="POST">
+<div class="overlay" id="deleteOverlay" onclick="if(event.target===this)closeDeleteModal()">
+  <form class="modal" id="deleteForm" method="POST" style="max-width:380px">
     @csrf
     @method('DELETE')
-    <div class="delete-icon">
-      <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+
+    <div class="modal-header">
+      <h2>Delete Class</h2>
+      <button type="button" class="close-btn" onclick="closeDeleteModal()">✕</button>
     </div>
-    <h2>Delete Class</h2>
-    <p id="deleteMsg">Are you sure you want to delete this class? This action cannot be undone.</p>
-    <div class="modal-actions" style="justify-content:center">
-      <button type="button" class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
-      <button type="submit" class="btn-delete">Yes, Delete</button>
+
+    <p id="deleteMsg" style="color:var(--text-label);font-size:14px;margin-bottom:22px;line-height:1.6">
+      Are you sure you want to delete this class? This action cannot be undone.
+    </p>
+
+    <div class="modal-actions">
+      <button type="button" class="btn-cancel" onclick="closeDeleteModal()">
+        Cancel
+      </button>
+
+      <button type="submit" class="btn-submit" style="background:#dc2626">
+        Delete
+      </button>
     </div>
   </form>
 </div>

@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Belle Voix – Students</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --brand:       #3b6ef8;
+    --brand-dark:  #2a56d6;
+    --brand-light: #eef2ff;
+    --sidebar-bg:  #ffffff;
+    --main-bg:     #f4f6fb;
+    --card-bg:     #ffffff;
+    --text-primary:#1a1d2e;
+    --text-muted:  #8c93a8;
+    --text-label:  #5b6278;
+    --border:      #e8eaf2;
+    --active-green:#16a34a;
+    --inactive-red:#dc2626;
+    --leave-amber: #d97706;
+    --row-hover:   #f8f9ff;
+    --shadow-sm:   0 1px 4px rgba(0,0,0,.06);
+    --shadow-md:   0 4px 20px rgba(59,110,248,.12);
+    --radius:      12px;
+    --sw:          240px;
+    --scw:         72px;
+    --dur:         .26s;
+    --ease:        cubic-bezier(.4,0,.2,1);
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--main-bg);
+    color: var(--text-primary);
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ─────────── SIDEBAR ─────────── */
+  .sidebar {
+    width: var(--sw);
+    min-height: 100vh;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    /* NO overflow:hidden — would clip body-mounted tooltip */
+    transition: width var(--dur) var(--ease);
+    flex-shrink: 0;
+  }
+  .sidebar.col { width: var(--scw); }
+
+  /* logo / toggle */
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 17px;
+    height: 64px;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--brand);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: padding var(--dur) var(--ease);
+  }
+  .sidebar.col .sidebar-logo { padding: 0; justify-content: center; }
+
+  .logo-icon {
+    width: 34px; height: 34px; min-width: 34px;
+    background: var(--brand);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 16px;
+    transition: transform .2s var(--ease);
+  }
+  .sidebar-logo:hover .logo-icon { transform: scale(1.07); }
+
+  .logo-label {
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 160px;
+    opacity: 1;
+    transition: max-width var(--dur) var(--ease), opacity .18s;
+  }
+  .sidebar.col .logo-label { max-width: 0; opacity: 0; }
+
+  /* scrollable nav area */
+  .sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: visible;   /* allow tooltip to escape */
+    scrollbar-width: none;
+  }
+  .sidebar-nav::-webkit-scrollbar { display: none; }
+
+  /* section labels */
+  .sidebar-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    color: var(--text-muted);
+    padding: 16px 20px 5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    height: 36px;
+    transition: opacity .18s, height var(--dur) var(--ease), padding var(--dur) var(--ease);
+  }
+  .sidebar.col .sidebar-section-label {
+    opacity: 0;
+    height: 8px;
+    padding: 4px 0;
+    pointer-events: none;
+  }
+
+  /* nav items */
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    margin: 2px 10px;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-label);
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: background .15s, color .15s,
+                padding var(--dur) var(--ease),
+                margin var(--dur) var(--ease);
+  }
+  
+  .nav-item:hover { background: var(--brand-light); color: var(--brand); }
+  .nav-item.active {
+    background: var(--brand);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 0 0 3px rgba(59,110,248,.13);
+  }
+  .nav-item svg {
+    width: 18px; height: 18px; min-width: 18px;
+    stroke: currentColor; fill: none; stroke-width: 2;
+    flex-shrink: 0;
+  }
+
+  /* collapsible label inside nav item */
+  .nav-label {
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 160px;
+    opacity: 1;
+    transition: max-width var(--dur) var(--ease), opacity .18s;
+  }
+/* ADD these instead */
+.sidebar.col .nav-item {
+  width: 44px;
+  height: 40px;
+  padding: 0;
+  margin: 2px auto;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+}
+
+.sidebar.col .nav-label {
+  display: none;
+}
+
+.sidebar.col .badge {
+  display: none;
+}
+  /* badge */
+  .badge {
+    margin-left: auto;
+    background: #ef4444;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 20px;
+    min-width: 18px;
+    text-align: center;
+    flex-shrink: 0;
+    transition: opacity .18s;
+  }
+  .sidebar.col .badge { opacity: 0; pointer-events: none; }
+
+  /* promo */
+  .sidebar-promo {
+    margin: auto 14px 18px;
+    background: linear-gradient(135deg, #3b6ef8 0%, #6c63ff 100%);
+    border-radius: var(--radius);
+    padding: 18px;
+    color: #fff;
+    flex-shrink: 0;
+    overflow: hidden;
+    max-height: 200px;
+    transition: opacity .18s,
+                max-height var(--dur) var(--ease),
+                margin var(--dur) var(--ease),
+                padding var(--dur) var(--ease);
+  }
+  .sidebar.col .sidebar-promo {
+    opacity: 0;
+    max-height: 0;
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
+  }
+  .sidebar-promo h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .sidebar-promo p  { font-size: 12px; opacity: .85; line-height: 1.5; margin-bottom: 12px; }
+  .promo-btn {
+    background: rgba(255,255,255,.2);
+    border: 1px solid rgba(255,255,255,.35);
+    color: #fff; font-size: 12px; font-weight: 600;
+    padding: 7px 14px; border-radius: 7px;
+    cursor: pointer; width: 100%;
+    transition: background .15s;
+  }
+  .promo-btn:hover { background: rgba(255,255,255,.3); }
+
+  /* body-mounted tooltip — escapes all clipping */
+  #sb-tip {
+    position: fixed;
+    background: #1a1d2e;
+    color: #fff;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 7px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+    display: none;
+    transition: opacity .15s;
+    box-shadow: 0 4px 12px rgba(0,0,0,.2);
+  }
+  #sb-tip::before {
+    content: '';
+    position: absolute;
+    right: 100%; top: 50%;
+    transform: translateY(-50%);
+    border: 5px solid transparent;
+    border-right-color: #1a1d2e;
+  }
+
+  /* mobile overlay */
+  .sb-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.35);
+    backdrop-filter: blur(2px);
+    z-index: 99;
+  }
+  .sb-overlay.show { display: block; }
+
+  /* ─────────── MAIN ─────────── */
+  .main {
+    margin-left: var(--sw);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    transition: margin-left var(--dur) var(--ease);
+    min-width: 0;
+  }
+  .main.col { margin-left: var(--scw); }
+
+  /* topbar */
+  .topbar {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 28px;
+    height: 64px;
+    position: sticky; top: 0; z-index: 5;
+  }
+  .mb-toggle {
+    display: none;
+    width: 36px; height: 36px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    align-items: center; justify-content: center;
+    cursor: pointer; background: #fff;
+    transition: background .15s;
+    flex-shrink: 0;
+  }
+  .mb-toggle:hover { background: var(--main-bg); }
+  .mb-toggle svg { width: 18px; height: 18px; stroke: var(--text-label); fill: none; stroke-width: 2; }
+  .search-wrap { flex: 1; max-width: 440px; position: relative; }
+  .search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: var(--text-muted); fill: none; stroke-width: 2; }
+  .search-wrap input {
+    width: 100%; background: var(--main-bg); border: 1px solid var(--border);
+    border-radius: 9px; padding: 9px 12px 9px 36px;
+    font-size: 13.5px; font-family: inherit; color: var(--text-primary);
+    outline: none; transition: border-color .15s;
+  }
+  .search-wrap input:focus { border-color: var(--brand); }
+  .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .icon-btn {
+    width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; background: #fff; position: relative; transition: background .15s;
+  }
+  .icon-btn:hover { background: var(--main-bg); }
+  .icon-btn svg { width: 18px; height: 18px; stroke: var(--text-label); fill: none; stroke-width: 2; }
+  .notif-dot { width: 7px; height: 7px; background: #ef4444; border-radius: 50%; border: 1.5px solid #fff; position: absolute; top: 5px; right: 5px; }
+  .user-chip {
+    display: flex; align-items: center; gap: 9px;
+    padding: 5px 10px 5px 5px; border: 1px solid var(--border);
+    border-radius: 11px; cursor: pointer; transition: background .15s;
+  }
+  .user-chip:hover { background: var(--main-bg); }
+  .avatar { width: 30px; height: 30px; background: var(--brand); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; font-weight: 700; }
+  .user-info .name { font-size: 13px; font-weight: 600; line-height: 1.3; }
+  .user-info .role { font-size: 11px; color: var(--text-muted); }
+
+  /* content */
+  .content { padding: 30px 28px; flex: 1; }
+  .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; }
+  .page-header h1 { font-size: 24px; font-weight: 800; letter-spacing: -.3px; }
+  .page-header .sub { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+  .enroll-btn {
+    background: var(--brand); color: #fff; border: none;
+    padding: 10px 20px; border-radius: 10px; font-size: 13.5px; font-weight: 700;
+    font-family: inherit; cursor: pointer; display: flex; align-items: center; gap: 7px;
+    box-shadow: var(--shadow-md); transition: background .15s, transform .1s;
+  }
+  .enroll-btn:hover { background: var(--brand-dark); transform: translateY(-1px); }
+  .enroll-btn:active { transform: translateY(0); }
+
+  /* table card */
+  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
+  .table-toolbar { display: flex; align-items: center; gap: 10px; padding: 16px 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .tb-search { position: relative; flex: 1; min-width: 180px; max-width: 280px; }
+  .tb-search svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; stroke: var(--text-muted); fill: none; stroke-width: 2; }
+  .tb-search input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px 8px 30px; font-size: 13px; font-family: inherit; outline: none; color: var(--text-primary); transition: border-color .15s; background: var(--main-bg); }
+  .tb-search input:focus { border-color: var(--brand); }
+  .filter-select {
+    border: 1px solid var(--border); border-radius: 8px; padding: 8px 28px 8px 12px;
+    font-size: 13px; font-family: inherit; color: var(--text-primary);
+    background: var(--main-bg); cursor: pointer; outline: none;
+    appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238c93a8' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center;
+    transition: border-color .15s;
+  }
+  .filter-select:focus { border-color: var(--brand); }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 900px; }
+  thead tr { border-bottom: 1px solid var(--border); }
+  thead th { padding: 12px 10px; font-size: 11px; font-weight: 700; letter-spacing: .07em; color: var(--text-muted); text-transform: uppercase; text-align: left; white-space: nowrap; background: #fafbff; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background .12s; animation: fadeIn .25s ease both; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--row-hover); }
+  tbody td { padding: 13px 10px; font-size: 13.5px; vertical-align: middle; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  .student-cell { display: flex; align-items: center; gap: 10px; }
+  .stu-avatar { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .stu-name { font-weight: 600; font-size: 14px; }
+  .stu-email { font-size: 11.5px; color: var(--text-muted); }
+  .stu-id { color: var(--text-muted); font-size: 13px; font-family: 'Courier New', monospace; }
+  .class-badge { display: inline-flex; align-items: center; justify-content: center; background: var(--brand-light); color: var(--brand); font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; min-width: 42px; }
+  .gender-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 20px; }
+  .gender-male   { background: #eff6ff; color: #1d4ed8; }
+  .gender-female { background: #fdf2f8; color: #be185d; }
+  .dob { color: var(--text-label); font-size: 13px; }
+  .status-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; padding: 4px 11px; border-radius: 20px; }
+  .status-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .s-active    { background: #dcfce7; color: var(--active-green); }
+  .s-active::before { background: var(--active-green); }
+  .s-inactive  { background: #fee2e2; color: var(--inactive-red); }
+  .s-inactive::before { background: var(--inactive-red); }
+  .s-withdrawn { background: #fef9c3; color: var(--leave-amber); }
+  .s-withdrawn::before { background: var(--leave-amber); }
+  .table-footer { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-top: 1px solid var(--border); background: #fafbff; flex-wrap: wrap; gap: 10px; }
+  .tf-info { font-size: 13px; color: var(--text-muted); }
+  .pagination { display: flex; gap: 4px; }
+  .pg-btn { width: 30px; height: 30px; border: 1px solid var(--border); background: #fff; border-radius: 7px; font-size: 13px; font-weight: 600; font-family: inherit; color: var(--text-label); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+  .pg-btn:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
+  .pg-btn.active { background: var(--brand); border-color: var(--brand); color: #fff; }
+
+  /* modals */
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.35); backdrop-filter: blur(3px); z-index: 200; align-items: center; justify-content: center; }
+  .overlay.open { display: flex; }
+  .modal { background: #fff; border-radius: 16px; padding: 28px; width: 100%; max-width: 500px; box-shadow: 0 20px 60px rgba(0,0,0,.2); animation: slideUp .2s ease; margin: 16px; max-height: 90vh; overflow-y: auto; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+  .modal-header h2 { font-size: 18px; font-weight: 800; }
+  .close-btn { width: 32px; height: 32px; border: 1px solid var(--border); background: var(--main-bg); border-radius: 8px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: background .15s; }
+  .close-btn:hover { background: #fee2e2; color: #ef4444; border-color: #fca5a5; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1/-1; }
+  .form-group label { font-size: 11px; font-weight: 700; color: var(--text-label); letter-spacing: .06em; text-transform: uppercase; }
+  .form-group input, .form-group select { border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; font-size: 13.5px; font-family: inherit; color: var(--text-primary); outline: none; transition: border-color .15s; background: var(--main-bg); min-width: 0; width: 100%; }
+  .form-group input:focus, .form-group select:focus { border-color: var(--brand); background: #fff; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 22px; }
+  .btn-cancel { padding: 10px 20px; border-radius: 9px; border: 1px solid var(--border); background: #fff; font-size: 13.5px; font-weight: 600; font-family: inherit; color: var(--text-label); cursor: pointer; transition: background .15s; }
+  .btn-cancel:hover { background: var(--main-bg); }
+  .btn-submit { padding: 10px 22px; border-radius: 9px; border: none; background: var(--brand); font-size: 13.5px; font-weight: 700; font-family: inherit; color: #fff; cursor: pointer; box-shadow: var(--shadow-md); transition: background .15s; }
+  .btn-submit:hover { background: var(--brand-dark); }
+
+  /* toast */
+  .toast { position: fixed; bottom: 24px; right: 24px; background: #1a1d2e; color: #fff; padding: 12px 18px; border-radius: 10px; font-size: 13.5px; font-weight: 500; display: flex; align-items: center; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.2); transform: translateY(60px); opacity: 0; transition: all .3s ease; z-index: 9998; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* responsive */
+  @media (max-width: 768px) {
+    .sidebar { left: calc(-1 * var(--sw)); width: var(--sw) !important; transition: left var(--dur) var(--ease); }
+    .sidebar.mb-open { left: 0; box-shadow: 4px 0 30px rgba(0,0,0,.15); }
+    .main { margin-left: 0 !important; }
+    .mb-toggle { display: flex; }
+  }
+</style>
+</head>
+<body>
+
+<!-- global tooltip — lives on body, never clipped -->
+<div id="sb-tip"></div>
+
+<!-- mobile backdrop -->
+<div class="sb-overlay" id="sbOverlay"></div>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
+
+  <div class="sidebar-logo" id="sbToggle" role="button" tabindex="0" aria-label="Toggle sidebar">
+    <div class="logo-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+      </svg>
+    </div>
+    <span class="logo-label">Belle Voix</span>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="sidebar-section-label">Menu</div>
+
+    <a class="nav-item" href="{{ route('dashboard.index') }}" data-tip="Dashboard">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span class="nav-label">Dashboard</span>
+    </a>
+
+    <a class="nav-item" href="{{ route('teachers.index') }}" data-tip="Teachers">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span class="nav-label">Teachers</span>
+    </a>
+
+    <a class="nav-item active" href="{{ route('students.index') }}" data-tip="Students" aria-current="page">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span class="nav-label">Students</span>
+    </a>
+
+    <a class="nav-item" href="{{ route('classes.index') }}" data-tip="Classes">
+      <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      <span class="nav-label">Classes</span>
+    </a>
+
+    <a class="nav-item" href="{{ route('attendances.index') }}" data-tip="Attendance">
+      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span class="nav-label">Attendance</span>
+    </a>
+
+    <a class="nav-item" href="#" data-tip="Finance">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <span class="nav-label">Finance</span>
+    </a>
+
+    <a class="nav-item" href="#" data-tip="Notice">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="nav-label">Notice</span>
+      <span class="badge">5</span>
+    </a>
+
+    <a class="nav-item" href="#" data-tip="Calendar">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span class="nav-label">Calendar</span>
+    </a>
+
+    <a class="nav-item" href="#" data-tip="Library">
+      <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span class="nav-label">Library</span>
+    </a>
+
+    <a class="nav-item" href="#" data-tip="Messages">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span class="nav-label">Messages</span>
+      <span class="badge">3</span>
+    </a>
+
+    <div class="sidebar-section-label">Other</div>
+
+    <a class="nav-item" href="#" data-tip="Profile">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span class="nav-label">Profile</span>
+    </a>
+
+    <a class="nav-item" href="#" data-tip="Setting">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span class="nav-label">Setting</span>
+    </a>
+  </div>
+
+  <div class="sidebar-promo">
+    <h4>Manage Smarter</h4>
+    <p>Keep all your school data in one place, anytime.</p>
+    <button class="promo-btn">Download the App</button>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main" id="main">
+  <header class="topbar">
+    <button class="mb-toggle" id="mbToggle" aria-label="Open sidebar">
+      <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="search-wrap" hidden>
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search anything…"/>
+    </div>
+    <div class="topbar-actions">
+      <div class="icon-btn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+      <div class="icon-btn">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="notif-dot"></span>
+      </div>
+      <div class="user-chip">
+        <div class="avatar">AX</div>
+        <div class="user-info"><div class="name">Adila XYZ</div><div class="role">Admin</div></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="page-header">
+      <div>
+        <h1>Students</h1>
+        <div class="sub" id="enrollCount">{{ $studentCount }} enrolled students</div>
+      </div>
+      <button class="enroll-btn" onclick="openModal()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Enroll Student
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="table-toolbar">
+        <div class="tb-search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="searchInput" placeholder="Search students…" oninput="filterTable()"/>
+        </div>
+        <select class="filter-select" id="classFilter" onchange="filterTable()">
+          <option value="">Select class</option>
+          @foreach($classes as $class)
+          <option value="{{ $class->id }}">{{ $class->name }}</option>
+          @endforeach
+        </select>
+        <select class="filter-select" id="statusFilter" onchange="filterTable()">
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+          <option value="withdrawn">Withdrawn</option>
+        </select>
+        <select class="filter-select" id="genderFilter" onchange="filterTable()">
+          <option value="">All Genders</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+        <select class="filter-select" id="sortBy" onchange="sortTable()">
+          <option value="newest" selected>Newest first</option>
+          <option value="oldest">Oldest first</option>
+          <option value="name_asc">Name (A → Z)</option>
+          <option value="name_desc">Name (Z → A)</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Fullname</th><th>Cin</th><th>Class</th><th>Teacher</th>
+              <th>Gender</th><th>Date of Birth</th><th>Status</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <div class="tf-info" id="tfInfo"></div>
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ENROLL MODAL -->
+<div class="overlay" id="overlay" onclick="closeOnOverlay(event)">
+  <form class="modal" id="studentForm" method="POST" action="{{ route('students.store') }}">
+    @csrf
+    <input type="hidden" name="_method" id="formMethod" value="POST">
+    <div class="modal-header">
+      <h2 id="modalTitle">Enroll New Student</h2>
+      <button type="button" class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Full Name</label>
+        <input name="fullname" type="text" id="f-name" placeholder="e.g. Emma Watson" required/>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input name="email" type="email" id="f-email" placeholder="e.g. student@gmail.com"/>
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input name="phone_number" type="text" id="f-phone_number" placeholder="e.g. 0612345678"/>
+      </div>
+      <div class="form-group">
+        <label>Class</label>
+        <select id="f-class" name="class_id">
+          <option value="">Select class</option>
+          @foreach($classes as $class)
+          <option value="{{ $class->id }}" data-teacher="{{ $class->teacher?->user?->fullname }}">{{ $class->name }}</option>
+          @endforeach
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Teacher</label>
+        <input type="text" id="f-teacher" disabled placeholder="Teacher will appear here">
+      </div>
+      <div class="form-group">
+        <label>Gender</label>
+        <select id="f-gender" name="gender">
+          <option value="">Select gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Date of Birth</label>
+        <input type="date" id="f-dob" name="dob"/>
+      </div>
+      <div class="form-group full">
+        <label>CIN</label>
+        <input type="text" id="f-cin" name="cin" placeholder="e.g. X123456" required>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" type="button" onclick="closeModal()">Cancel</button>
+      <button class="btn-submit" id="submitBtn" type="submit">Enroll Student</button>
+    </div>
+  </form>
+</div>
+
+@if(session('success'))
+<script>window.addEventListener('DOMContentLoaded',function(){showToast(@json(session('success')));});</script>
+@endif
+@if($errors->any())
+<script>window.addEventListener('DOMContentLoaded',function(){showToast(@json(implode("\n",$errors->all())));});</script>
+@endif
+
+<div class="overlay" id="deleteOverlay" onclick="if(event.target===this)closeDeleteModal()">
+  <form class="modal" id="deleteForm" method="POST" style="max-width:380px">
+    @csrf
+    @method('DELETE')
+    <div class="modal-header">
+      <h2>Delete Student</h2>
+      <button type="button" class="close-btn" onclick="closeDeleteModal()">✕</button>
+    </div>
+    <p style="color:var(--text-label);font-size:14px;margin-bottom:22px;line-height:1.6">
+      Are you sure you want to delete <strong id="deleteStudentName"></strong>? This action cannot be undone.
+    </p>
+    <div class="modal-actions">
+      <button type="button" class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+      <button type="submit" class="btn-submit" style="background:#dc2626">Delete</button>
+    </div>
+  </form>
+</div>
+
+<div class="toast" id="toast"><span id="toastMsg"></span></div>
+
+<script>
+/* ═══════════════════════════════════════
+   SIDEBAR — clean, bulletproof
+═══════════════════════════════════════ */
+var sidebar  = document.getElementById('sidebar');
+var mainEl   = document.getElementById('main');
+var sbOverlay = document.getElementById('sbOverlay');
+var tip      = document.getElementById('sb-tip');
+var sbCollapsed = false;
+
+/* apply / remove collapsed state */
+function setSidebarCollapsed(v) {
+  sbCollapsed = v;
+  sidebar.classList.toggle('col', v);
+  mainEl.classList.toggle('col', v);
+  try { localStorage.setItem('sbCol', v ? '1' : '0'); } catch(e) {}
+}
+
+/* toggle (desktop only) */
+function toggleSidebar() {
+  if (window.innerWidth <= 768) { openMobile(); return; }
+  setSidebarCollapsed(!sbCollapsed);
+}
+
+/* restore from storage */
+(function () {
+  try { if (localStorage.getItem('sbCol') === '1') setSidebarCollapsed(true); } catch(e) {}
+})();
+
+/* desktop toggle button */
+document.getElementById('sbToggle').addEventListener('click', toggleSidebar);
+document.getElementById('sbToggle').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSidebar(); }
+});
+
+/* Ctrl+B */
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+    e.preventDefault();
+    if (window.innerWidth > 768) toggleSidebar();
+  }
+});
+
+/* mobile */
+function openMobile() {
+  sidebar.classList.add('mb-open');
+  sbOverlay.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeMobile() {
+  sidebar.classList.remove('mb-open');
+  sbOverlay.classList.remove('show');
+  document.body.style.overflow = '';
+}
+document.getElementById('mbToggle').addEventListener('click', openMobile);
+sbOverlay.addEventListener('click', closeMobile);
+window.addEventListener('resize', function() {
+  if (window.innerWidth > 768) closeMobile();
+});
+
+/* ── tooltip (body-mounted, never clipped) ── */
+tip.style.cssText = [
+  'position:fixed',
+  'background:#1a1d2e',
+  'color:#fff',
+  'font-family:\'Plus Jakarta Sans\',sans-serif',
+  'font-size:12.5px',
+  'font-weight:600',
+  'padding:6px 12px',
+  'border-radius:7px',
+  'white-space:nowrap',
+  'pointer-events:none',
+  'z-index:9999',
+  'opacity:0',
+  'display:none',
+  'transition:opacity .15s',
+  'box-shadow:0 4px 12px rgba(0,0,0,.2)'
+].join(';');
+
+var tipTimer;
+document.querySelectorAll('.nav-item[data-tip]').forEach(function(item) {
+  item.addEventListener('mouseenter', function() {
+    if (!sbCollapsed) return;
+    clearTimeout(tipTimer);
+    var label = item.getAttribute('data-tip');
+    tip.textContent = label;
+    tip.style.display = 'block';
+    /* force reflow so transition fires */
+    tip.getBoundingClientRect();
+    var rect = item.getBoundingClientRect();
+    tip.style.left = (rect.right + 10) + 'px';
+    tip.style.top  = Math.round(rect.top + (rect.height / 2) - 14) + 'px';
+    tip.style.opacity = '1';
+  });
+  item.addEventListener('mouseleave', function() {
+    tip.style.opacity = '0';
+    tipTimer = setTimeout(function() { tip.style.display = 'none'; }, 160);
+  });
+});
+
+/* ═══════════════════════════════════════
+   TEACHER AUTO-FILL
+═══════════════════════════════════════ */
+document.getElementById('f-class').addEventListener('change', function() {
+  var opt = this.options[this.selectedIndex];
+  document.getElementById('f-teacher').value = opt.getAttribute('data-teacher') || '';
+});
+
+/* ═══════════════════════════════════════
+   TABLE
+═══════════════════════════════════════ */
+var COLORS = ['#3b6ef8','#8b5cf6','#10b981','#f59e0b','#ef4444','#06b6d4','#ec4899','#84cc16','#f97316','#6366f1','#14b8a6','#a855f7','#0ea5e9','#d946ef','#22c55e'];
+window.students = @json($students);
+var filtered = students.slice();
+var page = 1;
+var PER  = 10;
+
+function initials(n) {
+  if (!n) return '?';
+  return n.split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2).toUpperCase();
+}
+function colorFor(n) {
+  if (!n) return COLORS[0];
+  var h = 0;
+  for (var i = 0; i < n.length; i++) h = (h * 31 + n.charCodeAt(i)) & 0xffff;
+  return COLORS[h % COLORS.length];
+}
+function fmtDob(d) {
+  if (!d) return '—';
+  var p = d.split('-');
+  return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+p[1]-1]+' '+parseInt(p[2])+', '+p[0];
+}
+function sClass(s) { return {active:'s-active',inactive:'s-inactive',withdrawn:'s-withdrawn'}[s] || 's-active'; }
+function sLabel(s) { return {active:'Active',inactive:'Inactive',withdrawn:'Withdrawn'}[s] || s; }
+
+function escJ(obj) {
+  return JSON.stringify(obj).replace(/"/g, '&quot;');
+}
+
+function render() {
+  var total = filtered.length;
+  var pages = Math.max(1, Math.ceil(total / PER));
+  if (page > pages) page = pages;
+  var start = (page - 1) * PER;
+  var slice = filtered.slice(start, start + PER);
+
+  document.getElementById('tableBody').innerHTML = slice.map(function(s, i) {
+    var name    = (s.user && s.user.fullname)       ? s.user.fullname : '';
+    var email   = (s.user && s.user.email)          ? s.user.email    : '';
+    var cin     = (s.user && s.user.cin)            ? s.user.cin      : '';
+    var gender  = (s.user && s.user.gender)         ? s.user.gender   : '';
+    var dob     = (s.user && s.user.date_of_birth)  ? s.user.date_of_birth : null;
+    var cls     = (s.school_class && s.school_class.name) ? s.school_class.name : '';
+    var teacher = (s.school_class && s.school_class.teacher && s.school_class.teacher.user && s.school_class.teacher.user.fullname) ? s.school_class.teacher.user.fullname : '';
+
+    return '<tr style="animation-delay:' + (i * .03) + 's">' +
+      '<td><div class="student-cell">' +
+        '<div class="stu-avatar" style="background:' + colorFor(name) + '">' + initials(name) + '</div>' +
+        '<div><div class="stu-name">' + name + '</div><div class="stu-email">' + email + '</div></div>' +
+      '</div></td>' +
+      '<td><span class="stu-id">' + cin + '</span></td>' +
+      '<td><span class="class-badge">' + cls + '</span></td>' +
+      '<td style="font-size:12px;color:var(--text-label);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + teacher + '</td>' +
+      '<td><span class="gender-badge gender-' + gender + '">' + (gender ? gender.charAt(0).toUpperCase() + gender.slice(1) : 'N/A') + '</span></td>' +
+      '<td><span class="dob">' + fmtDob(dob) + '</span></td>' +
+      '<td><span class="status-badge ' + sClass(s.status) + '">' + sLabel(s.status) + '</span></td>' +
+      '<td style="white-space:nowrap"><div style="display:flex;gap:6px;align-items:center;">' +
+        '<a href="/students/' + s.id + '" title="View" style="width:30px;height:30px;border:1px solid var(--border);border-radius:7px;display:flex;align-items:center;justify-content:center;background:#fff;color:var(--brand);cursor:pointer;" onmouseover="this.style.background=\'var(--brand-light)\'" onmouseout="this.style.background=\'#fff\'">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></a>' +
+        '<a href="#" onclick="openEditModal(' + escJ(s) + ');return false;" title="Edit" style="width:30px;height:30px;border:1px solid var(--border);border-radius:7px;display:flex;align-items:center;justify-content:center;background:#fff;color:var(--leave-amber);cursor:pointer;" onmouseover="this.style.background=\'#fef9c3\'" onmouseout="this.style.background=\'#fff\'">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></a>' +
+        '<button onclick="deleteStudent(\'' + s.id + '\')" title="Delete" style="width:30px;height:30px;border:1px solid var(--border);border-radius:7px;display:flex;align-items:center;justify-content:center;background:#fff;color:var(--inactive-red);cursor:pointer;" onmouseover="this.style.background=\'#fee2e2\'" onmouseout="this.style.background=\'#fff\'">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>' +
+      '</div></td>' +
+    '</tr>';
+  }).join('');
+
+  var end = Math.min(start + PER, total);
+  document.getElementById('tfInfo').textContent = total === 0
+    ? 'No students found'
+    : 'Showing ' + (start + 1) + '–' + end + ' of ' + total + ' student' + (total !== 1 ? 's' : '');
+
+  var pg = document.getElementById('pagination');
+  pg.innerHTML = '';
+
+  function mkBtn(label, p, active) {
+    var b = document.createElement('button');
+    b.className = 'pg-btn' + (active ? ' active' : '');
+    b.textContent = label;
+    b.onclick = function() { page = p; render(); };
+    return b;
+  }
+
+  if (page > 1) pg.appendChild(mkBtn('‹', page - 1, false));
+  for (var p2 = 1; p2 <= pages; p2++) {
+    if (pages <= 6 || p2 === 1 || p2 === pages || Math.abs(p2 - page) <= 1) {
+      pg.appendChild(mkBtn(p2, p2, p2 === page));
+    } else if (p2 === 2 || p2 === pages - 1) {
+      var sp = document.createElement('span');
+      sp.className = 'pg-btn';
+      sp.textContent = '…';
+      sp.style.pointerEvents = 'none';
+      pg.appendChild(sp);
+    }
+  }
+  if (page < pages) pg.appendChild(mkBtn('›', page + 1, false));
+}
+
+function filterTable() {
+  var q   = document.getElementById('searchInput').value.toLowerCase();
+  var cls = document.getElementById('classFilter').value;
+  var st  = document.getElementById('statusFilter').value;
+  var gn  = document.getElementById('genderFilter').value;
+
+  filtered = students.filter(function(s) {
+    var name  = s.user && s.user.fullname   ? s.user.fullname.toLowerCase()  : '';
+    var cin   = s.user && s.user.cin        ? s.user.cin.toLowerCase()        : '';
+    var scls  = s.school_class             ? s.school_class                   : null;
+    var sgend = s.user && s.user.gender    ? s.user.gender                    : '';
+
+    return (!q  || name.includes(q) || cin.includes(q)) &&
+           (!cls || (scls && (scls.name == cls || String(scls.id) == cls))) &&
+           (!st  || s.status == st) &&
+           (!gn  || sgend == gn);
+  });
+  page = 1;
+  render();
+}
+
+function sortTable() {
+  var v = document.getElementById('sortBy').value;
+  filtered.sort(function(a, b) {
+    var an = a.user && a.user.fullname ? a.user.fullname : '';
+    var bn = b.user && b.user.fullname ? b.user.fullname : '';
+    if (v === 'name_asc')  return an.localeCompare(bn);
+    if (v === 'name_desc') return bn.localeCompare(an);
+    if (v === 'oldest')    return a.id - b.id;
+    return b.id - a.id; /* newest */
+  });
+  page = 1;
+  render();
+}
+
+var BASE = '{{ url("students") }}';
+
+function openModal() {
+  document.getElementById('modalTitle').textContent = 'Enroll New Student';
+  document.getElementById('studentForm').action     = '{{ route("students.store") }}';
+  document.getElementById('formMethod').value       = 'POST';
+  document.getElementById('submitBtn').textContent  = 'Enroll Student';
+  ['f-name','f-email','f-phone_number','f-dob','f-cin'].forEach(function(id) {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('f-class').value   = '';
+  document.getElementById('f-teacher').value = '';
+  document.getElementById('f-gender').value  = '';
+  document.getElementById('overlay').classList.add('open');
+}
+
+function openEditModal(s) {
+  document.getElementById('modalTitle').textContent = 'Edit Student';
+  document.getElementById('studentForm').action     = BASE + '/' + s.id;
+  document.getElementById('formMethod').value       = 'PUT';
+  document.getElementById('submitBtn').textContent  = 'Save Changes';
+  document.getElementById('f-name').value         = (s.user && s.user.fullname)      ? s.user.fullname      : '';
+  document.getElementById('f-email').value        = (s.user && s.user.email)         ? s.user.email         : '';
+  document.getElementById('f-phone_number').value = (s.user && s.user.phone_number)  ? s.user.phone_number  : '';
+  document.getElementById('f-dob').value          = (s.user && s.user.date_of_birth) ? s.user.date_of_birth.slice(0,10) : '';
+  document.getElementById('f-cin').value          = (s.user && s.user.cin)           ? s.user.cin           : '';
+  document.getElementById('f-gender').value       = (s.user && s.user.gender)        ? s.user.gender        : '';
+  document.getElementById('f-class').value        = (s.school_class && s.school_class.id) ? s.school_class.id : '';
+  document.getElementById('f-teacher').value      = (s.school_class && s.school_class.teacher && s.school_class.teacher.user && s.school_class.teacher.user.fullname) ? s.school_class.teacher.user.fullname : '';
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeModal()      { document.getElementById('overlay').classList.remove('open'); }
+function closeOnOverlay(e) { if (e.target === e.currentTarget) closeModal(); }
+
+function deleteStudent(id) {
+  var s = students.find(function(x) { return x.id == id; });
+  document.getElementById('deleteStudentName').textContent = (s && s.user && s.user.fullname) ? s.user.fullname : 'this student';
+  document.getElementById('deleteForm').action = BASE + '/' + id;
+  document.getElementById('deleteOverlay').classList.add('open');
+}
+function closeDeleteModal() { document.getElementById('deleteOverlay').classList.remove('open'); }
+
+var toastTimer;
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { t.classList.remove('show'); }, 3200);
+}
+
+render();
+</script>
+</body>
+</html>

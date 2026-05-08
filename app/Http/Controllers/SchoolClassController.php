@@ -9,75 +9,81 @@ use Illuminate\Http\Request;
 class SchoolClassController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display listing.
      */
     public function index()
     {
-        $classes = SchoolClass::with('teacher.user')->withCount('students')->get();
-        $classCount = SchoolClass::count();
-        $teachingCount  = SchoolClass::where('status','teaching')->count();
-        $pendingCount = SchoolClass::where('status','pending')->count();
-        $teachers = Teacher::all();
-        return view('classes',compact('classes','classCount','teachingCount','pendingCount','teachers'));
+        $classes = SchoolClass::with(['teacher.user'])
+            ->withCount('students')
+            ->latest()
+            ->get();
+
+        $classCount = SchoolClass::count('id');
+
+        $statusCounts = SchoolClass::selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        $teachers = Teacher::with('user')->get();
+
+        return view('classes', [
+            'classes'        => $classes,
+            'classCount'     => $classCount,
+            'teachingCount'  => $statusCounts['teaching'] ?? 0,
+            'pendingCount'   => $statusCounts['pending'] ?? 0,
+            'teachers'       => $teachers,
+        ]);
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Store new class.
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name'       => ['required', 'string', 'max:255'],
+            'teacher_id' => ['nullable', 'exists:teachers,id'],
+            'status'     => ['required', 'in:pending,teaching'],
+        ]);
+
+        SchoolClass::create($validated);
+
+        return redirect()
+            ->route('classes.index')
+            ->with('success', 'Class created successfully.');
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Update class.
      */
     public function update(Request $request, string $id)
     {
-        $class = SchoolClass::find($id,"id");
-        $class->name = $request->name;
-        $class->teacher_id = $request->teacher_id;
-        $class->status = $request->status;
-        $class->save();
-        return redirect()->back()->withSuccess("class edited successfully");
+        $validated = $request->validate([
+            'name'       => ['required', 'string', 'max:255'],
+            'teacher_id' => ['nullable', 'exists:teachers,id'],
+            'status'     => ['required', 'in:pending,teaching'],
+        ]);
+
+        $class = SchoolClass::findOrFail($id);
+
+        $class->update($validated);
+
+        return back()->with('success', 'Class updated successfully.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete class.
      */
     public function destroy(string $id)
     {
-        $class = SchoolClass::with('students')->findOrFail($id);
-        if ($class->students()->count() > 0) {
-            return redirect()->back()->with('error',"cannot delete class with students");
+        $class = SchoolClass::withCount('students')->findOrFail($id);
+
+        if ($class->students_count > 0) {
+            return back()->with('error', 'Cannot delete class with students.');
         }
-        else {
-            $class->delete();
-            return redirect()->back()->withSuccess('class deleted successfully');
-        }
+
+        $class->delete();
+
+        return back()->with('success', 'Class deleted successfully.');
     }
 }

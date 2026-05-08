@@ -369,9 +369,12 @@
       <div class="icon-btn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
       <div class="icon-btn"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-dot"></span></div>
       <div class="user-chip">
-        <div class="avatar">AX</div>
-        <div class="user-info"><div class="name">Adila XYZ</div><div class="role">Admin</div></div>
-      </div>
+      <div class="avatar" id="avatar">AX</div>
+      <div class="user-info">
+      <div class="name">{{ auth()->user()->fullname }}</div>
+      <div class="role">{{ auth()->user()->role }}</div>
+    </div>
+    </div>
     </div>
   </header>
 
@@ -379,7 +382,7 @@
     <div class="page-header">
       <div>
         <h1>Dashboard</h1>
-        <div class="sub" id="enrollCount">{{ $studentCount }} @php $h = now()->hour; $g = $h < 12 ? 'Good morning' : ($h < 18 ? 'Good afternoon' : 'Good evening'); @endphp {{ $g }}, Admin · {{ now()->translatedFormat('l, F j, Y') }}</div>
+        <div class="sub" id="enrollCount">@php $h = now()->hour; $g = $h < 12 ? 'Good morning' : ($h < 18 ? 'Good afternoon' : 'Good evening'); @endphp {{ $g }}, {{ auth()->user()->fullname }} · {{ now()->translatedFormat('l, F j, Y') }}</div>
       </div>
       <button class="enroll-btn" onclick="openModal()">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -498,7 +501,11 @@ function fmtDob(d){
 }
 const sClass = s=>({active:'s-active',inactive:'s-inactive',withdrawn:'s-withdrawn'}[s]||'s-active');
 const sLabel = s=>({active:'Active',inactive:'Inactive',withdrawn:'Withdrawn'}[s]||s);
+// USER AVATAR
+const name = "{{ auth()->user()->fullname ?? 'Guest User' }}";
 
+document.getElementById('avatar').textContent = initials(name);
+document.getElementById('avatar').style.background = colorFor(name);
 function render(){
   const total=filtered.length, pages=Math.max(1,Math.ceil(total/PER));
   if(page>pages) page=pages;

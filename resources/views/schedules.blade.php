@@ -394,125 +394,174 @@
   }
   .session-action-btn:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
 
-  /* ── DAY VIEW ── */
+  /* ── DAY / WEEK SHARED ── */
+  .cal-scroll-wrap {
+    overflow-y: auto;
+    max-height: 640px;
+    position: relative;
+    scroll-behavior: smooth;
+  }
+  .cal-layout {
+    display: flex;
+    position: relative;
+  }
+  /* Sticky time gutter */
+  .time-gutter {
+    width: 64px;
+    flex-shrink: 0;
+    background: #fafbff;
+    border-right: 1px solid var(--border);
+    position: sticky;
+    left: 0;
+    z-index: 3;
+  }
+  .time-gutter-inner { position: relative; }
+  .time-row-label {
+    height: 64px; /* SLOT_H — must match JS */
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 5px 8px 0 0;
+    font-size: 10.5px;
+    color: var(--text-muted);
+    font-weight: 600;
+    box-sizing: border-box;
+  }
+  /* Columns area */
+  .cal-columns {
+    flex: 1;
+    position: relative;
+    display: flex;
+    min-width: 0;
+  }
+  .cal-col {
+    flex: 1;
+    position: relative;
+    border-left: 1px solid var(--border);
+    min-width: 120px;
+  }
+  /* Hour lines */
+  .hour-line {
+    position: absolute;
+    left: 0; right: 0;
+    border-top: 1px solid var(--border);
+    pointer-events: none;
+  }
+  .half-hour-line {
+    position: absolute;
+    left: 0; right: 0;
+    border-top: 1px dashed #f0f1f7;
+    pointer-events: none;
+  }
+
+  /* ── EVENT BLOCKS ── */
+  .cal-event {
+    position: absolute;
+    border-radius: 7px;
+    padding: 5px 8px;
+    font-size: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: filter .15s, box-shadow .15s, transform .12s;
+    z-index: 2;
+    border-left-width: 3px;
+    border-left-style: solid;
+    box-sizing: border-box;
+  }
+  .cal-event:hover {
+    filter: brightness(.93);
+    box-shadow: 0 4px 14px rgba(0,0,0,.13);
+    transform: scale(1.012);
+    z-index: 4;
+  }
+  .cal-event-title { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; }
+  .cal-event-sub   { font-size: 10.5px; opacity: .78; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+  .cal-event-time  { font-size: 10px; opacity: .65; margin-top: 2px; }
+
+  /* ── DAY VIEW HEADER ── */
   .day-view { padding: 0; }
   .day-header {
-    display: grid;
-    grid-template-columns: 60px 1fr;
+    display: flex;
     border-bottom: 1px solid var(--border);
+    background: #fafbff;
+    position: sticky;
+    top: 0;
+    z-index: 4;
   }
-  .day-header-gutter { background: #fafbff; }
+  .day-header-gutter {
+    width: 64px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+  }
   .day-header-col {
-    padding: 14px 16px;
+    flex: 1;
+    padding: 12px 16px;
     text-align: center;
     border-left: 1px solid var(--border);
   }
-  .day-col-label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; }
+  .day-col-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; }
   .day-col-date {
-    font-size: 22px; font-weight: 800; margin-top: 2px;
+    font-size: 22px; font-weight: 800;
     width: 40px; height: 40px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     margin: 4px auto 0;
   }
   .day-col-date.today { background: var(--brand); color: #fff; }
 
-  .day-grid {
-    display: grid;
-    grid-template-columns: 60px 1fr;
-    position: relative;
-  }
-  .time-gutter { background: #fafbff; border-right: 1px solid var(--border); }
-  .time-slot-label {
-    height: 60px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-end;
-    padding: 6px 10px 0 0;
-    font-size: 11px;
-    color: var(--text-muted);
-    font-weight: 600;
-    border-bottom: 1px solid var(--border);
-  }
-  .day-col-slots { position: relative; }
-  .day-slot {
-    height: 60px;
-    border-bottom: 1px solid var(--border);
-    border-left: 1px solid var(--border);
-  }
-  .day-event {
-    position: absolute;
-    left: 6px; right: 6px;
-    border-radius: 8px;
-    padding: 6px 10px;
-    font-size: 12px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: filter .15s, transform .15s;
-    z-index: 2;
-  }
-  .day-event:hover { filter: brightness(0.93); transform: scale(1.01); }
-  .day-event-title { font-weight: 700; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .day-event-sub   { font-size: 11px; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-  /* ── WEEK VIEW ── */
+  /* ── WEEK VIEW HEADER ── */
   .week-view { padding: 0; overflow-x: auto; }
-  .week-grid {
-    display: grid;
-    grid-template-columns: 60px repeat(7, minmax(100px, 1fr));
+  .week-header {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background: #fafbff;
+    position: sticky;
+    top: 0;
+    z-index: 4;
     min-width: 760px;
   }
-  .week-header-gutter { background: #fafbff; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
-  .week-header-day {
-    padding: 10px 8px;
-    text-align: center;
-    border-bottom: 1px solid var(--border);
-    border-left: 1px solid var(--border);
-    background: #fafbff;
-  }
-  .week-day-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; }
-  .week-day-num {
-    font-size: 18px; font-weight: 800; margin-top: 2px;
-    width: 32px; height: 32px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    margin: 4px auto 0;
-  }
-  .week-day-num.today { background: var(--brand); color: #fff; }
-  .week-time-gutter {
-    background: #fafbff;
+  .week-header-gutter {
+    width: 64px;
+    flex-shrink: 0;
     border-right: 1px solid var(--border);
   }
-  .week-time-label {
-    height: 50px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-end;
-    padding: 5px 8px 0 0;
-    font-size: 11px;
-    color: var(--text-muted);
-    font-weight: 600;
-    border-bottom: 1px solid var(--border);
-  }
-  .week-cell {
-    height: 50px;
-    border-bottom: 1px solid var(--border);
+  .week-header-day {
+    flex: 1;
+    padding: 10px 8px;
+    text-align: center;
     border-left: 1px solid var(--border);
-    position: relative;
+    min-width: 100px;
   }
-  .week-event {
+  .week-day-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; }
+  .week-day-num {
+    font-size: 17px; font-weight: 800;
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 3px auto 0;
+  }
+  .week-day-num.today { background: var(--brand); color: #fff; }
+
+  /* ── CURRENT TIME INDICATOR ── */
+  .now-line {
     position: absolute;
-    inset: 2px 3px;
-    border-radius: 6px;
-    padding: 3px 6px;
-    font-size: 10.5px;
-    font-weight: 600;
-    overflow: hidden;
-    cursor: pointer;
-    transition: filter .15s;
-    z-index: 2;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    left: 0; right: 0;
+    z-index: 5;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
   }
-  .week-event:hover { filter: brightness(0.92); }
+  .now-line-dot {
+    width: 10px; height: 10px;
+    background: #ef4444;
+    border-radius: 50%;
+    margin-left: -5px;
+    flex-shrink: 0;
+  }
+  .now-line-bar {
+    flex: 1;
+    height: 2px;
+    background: #ef4444;
+    opacity: .85;
+  }
 
   /* ── MONTH VIEW ── */
   .month-view { padding: 0; }
@@ -663,6 +712,10 @@
   /* ── TOAST ── */
   .toast { position: fixed; bottom: 24px; right: 24px; background: #1a1d2e; color: #fff; padding: 12px 18px; border-radius: 10px; font-size: 13.5px; font-weight: 500; display: flex; align-items: center; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.2); transform: translateY(60px); opacity: 0; transition: all .3s ease; z-index: 999; }
   .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── VIEW TRANSITION ── */
+  #viewContainer { transition: opacity .18s ease; }
+  #viewContainer.fading { opacity: 0; }
 
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
@@ -1115,19 +1168,28 @@ function switchView(view) {
 }
 
 function renderCurrentView() {
-  updatePeriodLabel();
-  updateStats();
-  if (currentView === 'list')  renderList();
-  else if (currentView === 'day')   renderDay();
-  else if (currentView === 'week')  renderWeek();
-  else if (currentView === 'month') renderMonth();
-  else if (currentView === 'year')  renderYear();
+  const vc = document.getElementById('viewContainer');
+  vc.classList.add('fading');
+  setTimeout(() => {
+    vc.classList.remove('fading');
+    updatePeriodLabel();
+    updateStats();
+    if (currentView === 'list')        renderList();
+    else if (currentView === 'day')    renderDay();
+    else if (currentView === 'week')   renderWeek();
+    else if (currentView === 'month')  renderMonth();
+    else if (currentView === 'year')   renderYear();
+  }, 80);
 }
 
 // ─── LIST VIEW ────────────────────────────────────────────────────────────────
 function renderList() {
   const f = getFilters();
-  let data = schedules.filter(s => matchFilter(s, f)).sort((a,b) => a.date.localeCompare(b.date) || a.start_time.localeCompare(b.start_time));
+  const today = todayStr();
+  // Only show today + future sessions
+  let data = schedules
+    .filter(s => s.date >= today && matchFilter(s, f))
+    .sort((a,b) => a.date.localeCompare(b.date) || a.start_time.localeCompare(b.start_time));
   const total = data.length;
   const pages = Math.max(1, Math.ceil(total / LIST_PER));
   if (listPage > pages) listPage = pages;
@@ -1139,7 +1201,7 @@ function renderList() {
 
   let html = '<div class="list-view">';
   if (Object.keys(groups).length === 0) {
-    html += emptyState();
+    html += emptyState('No upcoming sessions');
   } else {
     Object.entries(groups).forEach(([date, sessions]) => {
       const isToday = date === todayStr();
@@ -1189,7 +1251,7 @@ function renderList() {
   // Footer
   const start = (listPage-1)*LIST_PER + 1;
   const end = Math.min(listPage*LIST_PER, total);
-  document.getElementById('tfInfo').textContent = total === 0 ? 'No sessions found' : `Showing ${start}–${end} of ${total} session${total!==1?'s':''}`;
+  document.getElementById('tfInfo').textContent = total === 0 ? 'No upcoming sessions' : `Showing ${start}–${end} of ${total} upcoming session${total!==1?'s':''}`;
   renderPagination(pages);
 }
 
@@ -1219,84 +1281,244 @@ function renderPagination(pages) {
 // ─── DAY VIEW ─────────────────────────────────────────────────────────────────
 const HOUR_START = 7;
 const HOUR_END   = 21;
-const SLOT_H     = 60; // px per hour
+const SLOT_H     = 64; // px per hour — matches CSS .time-row-label height
+
+function timeToMinutes(t) {
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+function minutesToPx(mins) {
+  return (mins / 60) * SLOT_H;
+}
+
+// Resolve overlapping events into columns (like Google Calendar)
+function resolveOverlaps(events) {
+  // Sort by start time
+  const sorted = [...events].sort((a,b) => timeToMinutes(a.start_time) - timeToMinutes(b.start_time));
+  const columns = []; // each column = array of events
+
+  sorted.forEach(ev => {
+    const evStart = timeToMinutes(ev.start_time);
+    const evEnd   = timeToMinutes(ev.end_time);
+    let placed = false;
+    for (let col of columns) {
+      const last = col[col.length - 1];
+      if (timeToMinutes(last.end_time) <= evStart) {
+        col.push(ev);
+        placed = true;
+        break;
+      }
+    }
+    if (!placed) columns.push([ev]);
+  });
+
+  // Assign col index and total overlapping cols
+  const result = [];
+  sorted.forEach(ev => {
+    const evStart = timeToMinutes(ev.start_time);
+    const evEnd   = timeToMinutes(ev.end_time);
+    let colIdx = 0;
+    let totalCols = 1;
+
+    // Which columns does this event share time with?
+    const overlappingCols = columns.filter(col =>
+      col.some(other =>
+        timeToMinutes(other.start_time) < evEnd &&
+        timeToMinutes(other.end_time)   > evStart
+      )
+    );
+    totalCols = overlappingCols.length;
+    colIdx    = overlappingCols.findIndex(col => col.includes(ev));
+
+    result.push({ ...ev, _colIdx: colIdx, _totalCols: totalCols });
+  });
+  return result;
+}
+
+function nowLineHTML(gridTop) {
+  const now = new Date();
+  const mins = now.getHours() * 60 + now.getMinutes();
+  const startMins = HOUR_START * 60;
+  const endMins   = HOUR_END   * 60;
+  if (mins < startMins || mins > endMins) return '';
+  const top = minutesToPx(mins - startMins);
+  return `<div class="now-line" style="top:${top}px">
+    <div class="now-line-dot"></div>
+    <div class="now-line-bar"></div>
+  </div>`;
+}
+
+function buildTimeGutter() {
+  let html = '<div class="time-gutter"><div class="time-gutter-inner">';
+  const totalHours = HOUR_END - HOUR_START + 1;
+  for (let h = HOUR_START; h <= HOUR_END; h++) {
+    const label = h === 12 ? '12 PM' : h < 12 ? h + ' AM' : (h - 12) + ' PM';
+    html += `<div class="time-row-label">${label}</div>`;
+  }
+  html += '</div></div>';
+  return html;
+}
+
+function buildHourLines() {
+  let html = '';
+  const totalHours = HOUR_END - HOUR_START + 1;
+  for (let h = 0; h <= totalHours; h++) {
+    const top = h * SLOT_H;
+    html += `<div class="hour-line" style="top:${top}px"></div>`;
+    if (h < totalHours) {
+      html += `<div class="half-hour-line" style="top:${top + SLOT_H/2}px"></div>`;
+    }
+  }
+  return html;
+}
+
+function buildEventBlock(ev) {
+  const c = colorFor(ev.teacher_id);
+  const startMins = timeToMinutes(ev.start_time);
+  const endMins   = timeToMinutes(ev.end_time);
+  const top    = minutesToPx(startMins - HOUR_START * 60);
+  const height = Math.max(minutesToPx(endMins - startMins) - 3, 18);
+  const totalCols = ev._totalCols || 1;
+  const colIdx    = ev._colIdx   || 0;
+  const pad = 4;
+  const widthPct  = (100 / totalCols);
+  const leftPct   = colIdx * widthPct;
+
+  return `<div class="cal-event"
+    style="top:${top+2}px;height:${height}px;
+           left:calc(${leftPct}% + ${pad}px);
+           width:calc(${widthPct}% - ${pad*2}px);
+           background:${c.bg};color:${c.text};border-left-color:${c.border}"
+    onclick="openDetailModal(${ev.id})">
+    <div class="cal-event-title">${ev.cls.name}</div>
+    ${height > 32 ? `<div class="cal-event-sub">${ev.teacher.name} · ${ev.classroom}</div>` : ''}
+    ${height > 52 ? `<div class="cal-event-time">${fmt12(ev.start_time)} – ${fmt12(ev.end_time)}</div>` : ''}
+  </div>`;
+}
 
 function renderDay() {
-  const ds = dateStr(currentDate);
+  const ds    = dateStr(currentDate);
   const today = todayStr();
-  const f = getFilters();
-  const daySessions = schedules.filter(s => s.date === ds && matchFilter(s, f));
+  const f     = getFilters();
+  const daySessions = resolveOverlaps(schedules.filter(s => s.date === ds && matchFilter(s, f)));
+  const isToday = ds === today;
+  const totalH  = (HOUR_END - HOUR_START + 1) * SLOT_H;
 
   let html = `<div class="day-view">
     <div class="day-header">
       <div class="day-header-gutter"></div>
       <div class="day-header-col">
-        <div class="day-col-label">${DAYS_SHORT[currentDate.getDay()]}</div>
-        <div class="day-col-date${ds===today?' today':''}">${currentDate.getDate()}</div>
+        <div class="day-col-label">${DAYS_LONG[currentDate.getDay()]}</div>
+        <div class="day-col-date${isToday ? ' today' : ''}">${currentDate.getDate()}</div>
       </div>
     </div>
-    <div class="day-grid">
-      <div class="time-gutter">`;
-  for (let h = HOUR_START; h <= HOUR_END; h++) {
-    html += `<div class="time-slot-label">${h === 12 ? '12 PM' : h < 12 ? h+' AM' : (h-12)+' PM'}</div>`;
-  }
-  html += `</div><div class="day-col-slots" style="position:relative;height:${(HOUR_END-HOUR_START+1)*SLOT_H}px">`;
-  for (let h = HOUR_START; h <= HOUR_END; h++) {
-    html += `<div class="day-slot" style="top:${(h-HOUR_START)*SLOT_H}px;position:absolute;left:0;right:0;height:${SLOT_H}px"></div>`;
-  }
-  if (daySessions.length === 0) {
-    html += `<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:var(--text-muted)">
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 8px;display:block"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      <div style="font-size:13px;font-weight:600">No sessions today</div>
-    </div>`;
-  }
-  daySessions.forEach(s => {
-    const c = colorFor(s.teacher_id);
-    const [sh, sm] = s.start_time.split(':').map(Number);
-    const [eh, em] = s.end_time.split(':').map(Number);
-    const top  = ((sh + sm/60) - HOUR_START) * SLOT_H;
-    const height = ((eh + em/60) - (sh + sm/60)) * SLOT_H - 4;
-    html += `<div class="day-event" style="top:${top+2}px;height:${height}px;background:${c.bg};color:${c.text};border-left:3px solid ${c.border}" onclick="openDetailModal(${s.id})">
-      <div class="day-event-title">${s.cls.name}</div>
-      <div class="day-event-sub">${s.teacher.name} · ${s.classroom}</div>
-    </div>`;
-  });
-  html += `</div></div></div>`;
+    <div class="cal-scroll-wrap" id="dayScroll">
+      <div class="cal-layout" style="height:${totalH}px">
+        ${buildTimeGutter()}
+        <div class="cal-columns">
+          <div class="cal-col" style="height:${totalH}px">
+            ${buildHourLines()}
+            ${isToday ? nowLineHTML() : ''}
+            ${daySessions.length === 0 ? `<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:var(--text-muted);pointer-events:none"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 8px;display:block"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg><div style="font-size:13px;font-weight:600">No sessions today</div></div>` : ''}
+            ${daySessions.map(buildEventBlock).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+
   document.getElementById('viewContainer').innerHTML = html;
+
+  // Auto-scroll to current time (or first event)
+  const scrollEl = document.getElementById('dayScroll');
+  if (scrollEl) {
+    let scrollTo;
+    if (isToday) {
+      const now = new Date();
+      scrollTo = minutesToPx((now.getHours() * 60 + now.getMinutes()) - HOUR_START * 60) - 120;
+    } else if (daySessions.length > 0) {
+      scrollTo = minutesToPx(timeToMinutes(daySessions[0].start_time) - HOUR_START * 60) - 60;
+    } else {
+      scrollTo = minutesToPx(2 * 60); // 2 hours in = 9 AM for HOUR_START=7
+    }
+    scrollEl.scrollTop = Math.max(0, scrollTo);
+  }
+
+  // Update now-line every minute
+  if (isToday) {
+    clearInterval(window._nowLineTimer);
+    window._nowLineTimer = setInterval(() => {
+      const col = document.querySelector('#dayScroll .cal-col');
+      if (!col) { clearInterval(window._nowLineTimer); return; }
+      const existing = col.querySelector('.now-line');
+      if (existing) existing.remove();
+      col.insertAdjacentHTML('beforeend', nowLineHTML());
+    }, 60000);
+  }
 }
 
 // ─── WEEK VIEW ────────────────────────────────────────────────────────────────
 function renderWeek() {
-  const ws = weekStart(currentDate);
-  const days = Array.from({length:7}, (_,i) => addDays(ws,i));
+  const ws    = weekStart(currentDate);
+  const days  = Array.from({ length: 7 }, (_, i) => addDays(ws, i));
   const today = todayStr();
-  const f = getFilters();
+  const f     = getFilters();
+  const totalH = (HOUR_END - HOUR_START + 1) * SLOT_H;
 
-  let html = `<div class="week-view"><div class="week-grid">
-    <div class="week-header-gutter" style="border-bottom:1px solid var(--border)"></div>`;
+  // Build header
+  let html = `<div class="week-view">
+    <div style="overflow-x:auto">
+    <div style="min-width:760px">
+    <div class="week-header">
+      <div class="week-header-gutter"></div>`;
   days.forEach(d => {
     const ds = dateStr(d);
     html += `<div class="week-header-day">
       <div class="week-day-label">${DAYS_SHORT[d.getDay()]}</div>
-      <div class="week-day-num${ds===today?' today':''}">${d.getDate()}</div>
+      <div class="week-day-num${ds === today ? ' today' : ''}">${d.getDate()}</div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // Build body
+  html += `<div class="cal-scroll-wrap" id="weekScroll" style="overflow-x:visible">
+    <div class="cal-layout" style="height:${totalH}px;min-width:760px">
+      ${buildTimeGutter()}
+      <div class="cal-columns">`;
+
+  days.forEach(d => {
+    const ds = dateStr(d);
+    const daySessions = resolveOverlaps(schedules.filter(s => s.date === ds && matchFilter(s, f)));
+    const isToday = ds === today;
+    html += `<div class="cal-col" style="height:${totalH}px">
+      ${buildHourLines()}
+      ${isToday ? nowLineHTML() : ''}
+      ${daySessions.map(buildEventBlock).join('')}
     </div>`;
   });
 
-  for (let h = HOUR_START; h <= HOUR_END; h++) {
-    html += `<div class="week-time-gutter"><div class="week-time-label">${h===12?'12 PM':h<12?h+' AM':(h-12)+' PM'}</div></div>`;
-    days.forEach(d => {
-      const ds = dateStr(d);
-      const sessions = schedules.filter(s => s.date===ds && matchFilter(s,f) && +s.start_time.split(':')[0]===h);
-      html += `<div class="week-cell">`;
-      sessions.forEach(s => {
-        const c = colorFor(s.teacher_id);
-        html += `<div class="week-event" style="background:${c.bg};color:${c.text};border-left:2px solid ${c.border}" onclick="openDetailModal(${s.id})">${s.cls.name}</div>`;
-      });
-      html += `</div>`;
-    });
-  }
-  html += `</div></div>`;
+  html += `</div></div></div></div></div>`;
   document.getElementById('viewContainer').innerHTML = html;
+
+  // Auto-scroll to current time
+  const scrollEl = document.getElementById('weekScroll');
+  if (scrollEl) {
+    const now = new Date();
+    const scrollTo = minutesToPx((now.getHours() * 60 + now.getMinutes()) - HOUR_START * 60) - 120;
+    scrollEl.scrollTop = Math.max(0, scrollTo);
+  }
+
+  // Update now-line every minute
+  clearInterval(window._nowLineTimer);
+  window._nowLineTimer = setInterval(() => {
+    document.querySelectorAll('#weekScroll .cal-col').forEach((col, i) => {
+      const ds = dateStr(days[i]);
+      if (ds !== today) return;
+      const existing = col.querySelector('.now-line');
+      if (existing) existing.remove();
+      col.insertAdjacentHTML('beforeend', nowLineHTML());
+    });
+  }, 60000);
 }
 
 // ─── MONTH VIEW ───────────────────────────────────────────────────────────────
@@ -1384,10 +1606,10 @@ function jumpToDay(ds) {
 }
 
 // ─── EMPTY STATE ──────────────────────────────────────────────────────────────
-function emptyState() {
+function emptyState(msg = 'No upcoming sessions') {
   return `<div class="empty-state">
     <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-    <h3>No sessions found</h3>
+    <h3>${msg}</h3>
     <p>Try adjusting your filters or book a new session.</p>
   </div>`;
 }

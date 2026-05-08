@@ -83,9 +83,8 @@ Route::delete('/teachers/{id}', [TeacherController::class, 'destroy'])
 Route::get('/classes', [SchoolClassController::class, 'index'])
     ->name('classes.index');
 
-Route::post('/classes', function () {
-    return "classes";
-})->name('classes.store');
+Route::post('/classes', [SchoolClassController::class, 'store'])
+    ->name('classes.store');
 
 Route::put('/classes/{id}', [SchoolClassController::class, 'update'])
     ->name('classes.update');
